@@ -100,6 +100,7 @@ function tugasView(n) {
   <section class="hero"><h1 class="display">tugas unit ${n}</h1><p>${esc(u.title)}</p></section>
   <div class="grid">
     <section class="panel"><div class="label">Instruksi tugas</div><div class="task">${esc(g.tugas)}</div>
+      <p class="help"><b>Cara mengumpulkan:</b> tulis semuanya dalam satu berkas R Markdown (.Rmd). Kode ditulis di R chunk, penjelasan dan jawaban sebagai teks. Bila tugas menyebut skrip .R atau berkas hasil (misalnya CSV), tulis kodenya di R chunk dan sebutkan hasilnya di narasi.</p>
       ${g.data.length ? `<p class="help">Berkas untuk tugas ini:</p><div class="files">${g.data.map(f => `<a class="btn btn-sm btn-secondary" href="datasets/${f}" download>${esc(f)}</a>`).join('')}</div>` : ''}</section>
     <section class="panel"><div class="label">Kumpulkan tugas</div>${status}
       ${open ? `<div class="upload"><input class="in" id="rmdfile" type="file" accept=".Rmd,.rmd"><button class="btn" data-act="upload" data-n="${n}">${t ? 'Unggah ulang' : 'Unggah tugas'}</button></div>
