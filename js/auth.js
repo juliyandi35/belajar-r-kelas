@@ -13,7 +13,9 @@ const toast = msg => {
   toast.timer = setTimeout(() => t.classList.remove('show'), 4500);
 };
 
+const CLOCK_SKEW = /issued at future/i;
 const ERR = [
+  [CLOCK_SKEW, 'Jam server sedang tidak sinkron sesaat. Tunggu beberapa detik, lalu coba lagi.'],
   [/Database error saving new user/i, 'Kode kelas salah, atau email ini bukan email mentor.'],
   [/Invalid login credentials/i, 'Email atau password salah.'],
   [/already registered/i, 'Email sudah terdaftar. Silakan masuk.'],
@@ -40,15 +42,23 @@ const Auth = {
   // Muat profil dan progres milik akun yang sedang login.
   async load(user) {
     const uid = user.id;
-    const [p, pr, ld, ck, sm] = await Promise.all([
+    const fetchAll = () => Promise.all([
       sb.from('profiles').select('full_name, email, role, must_change_password').eq('id', uid).single(),
       sb.from('progress').select('streak, last_day').eq('user_id', uid).single(),
       sb.from('lessons_done').select('lesson_id, xp, acc').eq('user_id', uid),
       sb.from('checks').select('unit, idx').eq('user_id', uid),
       sb.from('submissions').select('unit, file_name, size_bytes, submitted_at').eq('user_id', uid),
     ]);
+    // Jam server Auth kadang sedikit lebih cepat dari server data, sehingga token yang baru terbit ditolak
+    // "JWT issued at future". Sifatnya sesaat: tunggu sebentar lalu ulangi.
+    let res = await fetchAll();
+    for (let i = 1; i <= 3 && res.some(r => CLOCK_SKEW.test(r.error?.message || '')); i++) {
+      await new Promise(r => setTimeout(r, 1000 * i));
+      res = await fetchAll();
+    }
+    const [p, pr, ld, ck, sm] = res;
     const err = p.error || pr.error || ld.error || ck.error || sm.error;
-    if (err) throw err;
+    if (err) throw new Error(friendly(err));
     Object.assign(S, { user, uid, role: p.data.role, name: p.data.full_name, email: p.data.email, mustChange: p.data.must_change_password, streak: pr.data.streak, last: pr.data.last_day || '' });
     S.done = Object.fromEntries(ld.data.map(r => [r.lesson_id, { xp: r.xp, acc: r.acc }]));
     S.xp = ld.data.reduce((n, r) => n + r.xp, 0);
@@ -102,7 +112,11 @@ const Auth = {
     while (this.queue.length) {
       const { id, xp, acc } = this.queue[0];
       const { error } = await sb.rpc('complete_lesson', { p_id: id, p_xp: xp, p_acc: acc });
-      if (error && !error.code) { toast('Progres belum tersimpan. Akan dicoba lagi saat koneksi kembali.'); return; }
+      if (error && (!error.code || CLOCK_SKEW.test(error.message))) {
+        toast('Progres belum tersimpan. Akan dicoba lagi otomatis.');
+        setTimeout(() => this.flush(), 3000);
+        return;
+      }
       if (error) toast('Progres gagal disimpan: ' + error.message);
       this.queue.shift();
     }
