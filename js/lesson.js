@@ -1,16 +1,14 @@
 // Pemutar pelajaran: kartu materi, lalu soal (pilihan, benar/salah, ketik, susun) dengan hati dan umpan balik.
 let L = null;
-let ac;
 
-const beep = ok => {
+// Efek suara jawaban: berkas mp3 di folder sounds/. Hanya diputar bila toggle "Sound effects" aktif.
+const SFX = { ok: new Audio('sounds/duolingo_correct.mp3'), no: new Audio('sounds/duolingo_wrong.mp3') };
+Object.values(SFX).forEach(a => (a.preload = 'auto'));
+const playSfx = ok => {
   if (!S.set.sound) return;
-  try {
-    ac ||= new AudioContext();
-    const o = ac.createOscillator(), g = ac.createGain();
-    o.connect(g); g.connect(ac.destination);
-    o.frequency.value = ok ? 660 : 220; g.gain.value = 0.06;
-    o.start(); o.stop(ac.currentTime + 0.12);
-  } catch { /* audio tidak tersedia */ }
+  const a = SFX[ok ? 'ok' : 'no'];
+  a.currentTime = 0;
+  a.play().catch(() => { /* diblokir browser atau berkas tidak termuat: abaikan */ });
 };
 const shuffle = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
 const norm = s => s.toLowerCase().replace(/\s+/g, '').replace(/'/g, '"');
@@ -87,7 +85,7 @@ function check() {
   else if (q.t === 'type') ok = q.ok.some(a => norm(a) === norm(L.txt));
   else ok = L.pick.map(i => L.bank[i]).join('\u0001') === q.ans.join('\u0001');
   L.fb = { ok };
-  beep(ok);
+  playSfx(ok);
   if (ok) { L.done++; if (!s.tries) L.first++; }
   else {
     L.hearts--;
