@@ -1,5 +1,6 @@
 // Login, sesi, dan akses data lewat Supabase.
 // Kunci di config.js adalah kunci publik (aman di browser). Keamanan data dijaga oleh RLS di database.
+const IS_RECOVERY = /type=recovery/.test(location.hash); // dibaca sebelum supabase-js membersihkan URL
 const sb = window.supabase.createClient(CONFIG.supabase.url, CONFIG.supabase.key);
 
 const toast = msg => {
@@ -19,6 +20,8 @@ const ERR = [
   [/not confirmed/i, 'Email belum dikonfirmasi. Cek kotak masuk emailmu.'],
   [/rate limit/i, 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.'],
   [/valid email|invalid format/i, 'Format email tidak valid.'],
+  [/different from the old/i, 'Password baru harus berbeda dari password lama.'],
+  [/session missing|not authenticated/i, 'Sesi habis. Masuk lagi, lalu coba ganti password.'],
 ];
 const friendly = e => (ERR.find(([re]) => re.test(e.message || '')) || [null, e.message || 'Terjadi kesalahan.'])[1];
 
@@ -29,7 +32,7 @@ const Auth = {
   async init() {
     const { data, error } = await sb.auth.getSession();
     if (error) throw error;
-    if (data.session) await this.load(data.session.user);
+    if (data.session) { await this.load(data.session.user); S.recovery = IS_RECOVERY; }
     this.ready = true;
   },
 
@@ -37,14 +40,14 @@ const Auth = {
   async load(user) {
     const uid = user.id;
     const [p, pr, ld, ck] = await Promise.all([
-      sb.from('profiles').select('full_name, email, role').eq('id', uid).single(),
+      sb.from('profiles').select('full_name, email, role, must_change_password').eq('id', uid).single(),
       sb.from('progress').select('streak, last_day').eq('user_id', uid).single(),
       sb.from('lessons_done').select('lesson_id, xp, acc').eq('user_id', uid),
       sb.from('checks').select('unit, idx').eq('user_id', uid),
     ]);
     const err = p.error || pr.error || ld.error || ck.error;
     if (err) throw err;
-    Object.assign(S, { user, uid, role: p.data.role, name: p.data.full_name, email: p.data.email, streak: pr.data.streak, last: pr.data.last_day || '' });
+    Object.assign(S, { user, uid, role: p.data.role, name: p.data.full_name, email: p.data.email, mustChange: p.data.must_change_password, streak: pr.data.streak, last: pr.data.last_day || '' });
     S.done = Object.fromEntries(ld.data.map(r => [r.lesson_id, { xp: r.xp, acc: r.acc }]));
     S.xp = ld.data.reduce((n, r) => n + r.xp, 0);
     S.checks = {};
@@ -64,6 +67,21 @@ const Auth = {
     if (!data.session) return 'confirm';
     await this.load(data.user);
     return 'ok';
+  },
+
+  // Kirim email reset. Respons sama baik email terdaftar maupun tidak (Supabase tidak membocorkannya).
+  async forgot(email) {
+    const redirectTo = location.href.split('#')[0].replace(/index\.html$/, '');
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) throw new Error(friendly(error));
+  },
+
+  async changePassword(password) {
+    const { error } = await sb.auth.updateUser({ password });
+    if (error) throw new Error(friendly(error));
+    await sb.rpc('password_changed'); // hapus penanda "wajib ganti password"
+    S.mustChange = false;
+    S.recovery = false;
   },
 
   async signOut() {
@@ -109,6 +127,23 @@ const Auth = {
     if (error) throw error;
     return data;
   },
+  async mentors() {
+    const { data, error } = await sb.from('profiles').select('full_name, email, created_at').eq('role', 'mentor').order('created_at');
+    if (error) throw error;
+    return data;
+  },
+  // Aksi admin (tambah mentor, reset password siswa) berjalan di Edge Function yang memeriksa peran mentor.
+  async admin(body) {
+    const { data, error } = await sb.functions.invoke('admin-users', { body });
+    if (error) {
+      let msg = error.message;
+      try { msg = (await error.context.json()).error || msg; } catch { /* pakai pesan bawaan */ }
+      throw new Error(msg);
+    }
+    return data;
+  },
+  addMentor(email, name) { return this.admin({ action: 'add_mentor', email, name }); },
+  resetStudent(id) { return this.admin({ action: 'reset_password', user_id: id }); },
   async classCode() {
     const { data, error } = await sb.from('settings').select('value').eq('key', 'class_code').single();
     if (error) throw error;

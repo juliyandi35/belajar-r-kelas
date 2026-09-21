@@ -4,7 +4,7 @@ const SET_DEF = { sound: true, anim: true, all: false };
 let SET = { ...SET_DEF };
 try { SET = { ...SET_DEF, ...JSON.parse(localStorage.getItem(SET_KEY) || '{}') }; } catch { /* storage diblokir: pakai default */ }
 
-const EMPTY = () => ({ user: null, uid: null, role: null, name: '', email: '', xp: 0, streak: 0, last: '', done: {}, checks: {} });
+const EMPTY = () => ({ user: null, uid: null, role: null, name: '', email: '', mustChange: false, recovery: false, xp: 0, streak: 0, last: '', done: {}, checks: {} });
 const S = { ...EMPTY(), set: SET };
 const resetState = () => Object.assign(S, EMPTY());
 const save = () => { try { localStorage.setItem(SET_KEY, JSON.stringify(S.set)); } catch { /* abaikan */ } };

@@ -1,11 +1,11 @@
 // Tab "Mentor" untuk siswa (profil mentor + akun) dan tab "Kelas" untuk mentor (dasbor pemantauan).
-let ROSTER = null, CODE = null, RERR = '', RBUSY = false, RAT = null, OPEN = null;
+let ROSTER = null, CODE = null, MENTORS = [], RERR = '', RBUSY = false, RAT = null, OPEN = null, ARM = null;
 
 async function refreshRoster() {
   if (RBUSY) return;
   RBUSY = true;
   try {
-    [ROSTER, CODE] = await Promise.all([Auth.roster(), Auth.classCode()]);
+    [ROSTER, CODE, MENTORS] = await Promise.all([Auth.roster(), Auth.classCode(), Auth.mentors()]);
     RERR = ''; RAT = new Date();
   } catch (e) {
     RERR = e.message || 'Gagal memuat data kelas.';
@@ -29,14 +29,14 @@ function detailHtml(s) {
   const got = Object.fromEntries(s.lessons_done.map(r => [r.lesson_id, r]));
   const chk = {};
   s.checks.forEach(c => (chk[c.unit] = (chk[c.unit] || 0) + 1));
-  return `<div class="detail">${COURSE.map(u => `<div class="dr"><b>Unit ${u.n}</b><span class="dt">${esc(u.title)}</span>${u.lessons.map((l, i) => {
+  return `<div class="row" style="margin:4px 0 12px;align-items:center"><button class="btn btn-white btn-sm" data-act="resetpw" data-id="${esc(s.id)}">${ARM === s.id ? 'Yakin? Klik lagi untuk reset' : 'Reset password ke default'}</button><span class="help" style="margin:0">Untuk siswa yang lupa password dan tidak menerima email reset.</span></div><div class="detail">${COURSE.map(u => `<div class="dr"><b>Unit ${u.n}</b><span class="dt">${esc(u.title)}</span>${u.lessons.map((l, i) => {
     const r = got[u.n + '.' + i];
     return r ? `<span class="badge ${r.acc >= 80 ? 'b-green' : r.acc >= 50 ? 'b-blue' : 'b-gold'}" title="${esc(l.name)}: akurasi terbaik">${r.acc}%</span>` : `<span class="badge dim" title="${esc(l.name)}: belum dikerjakan">—</span>`;
   }).join('')}<span class="dc">Checklist ${chk[u.n] || 0}/${u.guide.cek.length}</span></div>`).join('')}</div>`;
 }
 
 function accountPanel() {
-  return `<div class="label">Akunmu</div><p class="help"><b>${esc(S.name)}</b><br>${esc(S.email)}<br>Peran: ${S.role === 'mentor' ? 'Mentor' : 'Siswa'}</p><button class="btn btn-secondary btn-sm" data-act="logout">Keluar</button>`;
+  return `<div class="label">Akunmu</div><p class="help"><b>${esc(S.name)}</b><br>${esc(S.email)}<br>Peran: ${S.role === 'mentor' ? 'Mentor' : 'Siswa'}</p><div class="row"><a class="btn btn-secondary btn-sm" href="#/password">Ganti password</a><button class="btn btn-secondary btn-sm" data-act="logout">Keluar</button></div>`;
 }
 
 function dash() {
@@ -57,6 +57,11 @@ function dash() {
       <div class="row"><input class="in" id="newcode" placeholder="Kode baru (minimal 6 karakter)" maxlength="20" autocomplete="off"><button class="btn" data-act="setcode">Ganti kode</button></div>
       <p class="amsg" id="cmsg" role="alert"></p></section>
     <section class="panel">${accountPanel()}</section>
+    <section class="panel" style="grid-column:1/-1;border-right:none"><div class="label">Mentor</div>
+      <ul class="list" style="margin-bottom:20px">${MENTORS.map(x => `<li><b>${esc(x.full_name)}</b> <small style="color:var(--gray-light)">${esc(x.email)}</small></li>`).join('')}</ul>
+      <p class="help">Tambah mentor dengan email-nya. Akun dibuat langsung dengan password awal <b>123456</b>, dan mentor baru wajib menggantinya saat pertama masuk.</p>
+      <div class="row"><input class="in" id="mentoremail" type="email" placeholder="Email mentor baru" autocomplete="off"><input class="in" id="mentorname" placeholder="Nama (opsional)" maxlength="80" autocomplete="off"><button class="btn" data-act="addmentor">Tambah mentor</button></div>
+      <p class="amsg" id="mmsg" role="alert"></p></section>
     <section class="panel dark" style="grid-column:1/-1;border-right:none"><div class="label">Progres siswa</div>
       <div class="row" style="align-items:center;margin-bottom:20px"><button class="btn btn-white btn-sm" data-act="refresh" ${RBUSY ? 'disabled' : ''}>${RBUSY ? 'Memuat…' : 'Segarkan'}</button><span class="help" style="margin:0">${RAT ? 'Diperbarui ' + RAT.toLocaleTimeString('id-ID') + '. Klik nama siswa untuk melihat akurasi per pelajaran.' : ''}</span></div>
       ${RERR ? `<p class="help"><span class="badge b-red">${esc(RERR)}</span></p>` : ''}${table}</section>

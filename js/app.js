@@ -1,6 +1,6 @@
 // Router hash + tampilan: beranda (jalur belajar), panduan unit, dataset, laporan mentor.
 const tabs = () => [['', 'Belajar'], ['data', 'Dataset'], ['mentor', S.role === 'mentor' ? 'Kelas' : 'Mentor']];
-let AUTHUP = false, BOOTERR = '';
+let AUTHMODE = 'in', BOOTERR = '';
 const route = () => (location.hash.slice(1) || '/').split('/').filter(Boolean);
 const pct = (a, b) => (b ? Math.round(a / b * 100) : 0);
 const checkedTotal = () => Object.values(S.checks).reduce((n, a) => n + a.length, 0);
@@ -10,7 +10,7 @@ const prog = (label, v, cls) => `<div class="prow"><span class="pname">${label}<
 function chrome(a) {
   const on = k => ((a || '') === k ? 'on' : '');
   const brand = `<a class="logo" href="#/"><span class="logo-mark">r</span><span class="logo-word">${esc(CONFIG.brand)}</span></a>`;
-  if (!S.user) { $('#nav').innerHTML = `<div class="nav-in">${brand}</div>`; $('#tabbar').innerHTML = ''; return; }
+  if (!S.user || S.recovery || S.mustChange) { $('#nav').innerHTML = `<div class="nav-in">${brand}</div>`; $('#tabbar').innerHTML = ''; return; }
   $('#nav').innerHTML = `<div class="nav-in">${brand}<span class="divider"></span><span class="nav-label">${S.role === 'mentor' ? 'Mode mentor' : 'Kelas R'}</span>
     <nav class="links">${tabs().map(([k, t]) => `<a class="${on(k)}" href="#/${k}">${t}</a>`).join('')}</nav>
     <div class="stats"><span class="streak" title="Streak harian"><span>🔥</span><b>${streakNow()}</b></span><span class="badge b-gold">⚡ ${S.xp} XP</span><button class="btn btn-ghost btn-sm out" data-act="logout">Keluar</button></div></div>`;
@@ -97,17 +97,34 @@ function datasets() {
 }
 
 function authView() {
-  const up = AUTHUP;
-  return `<section class="hero"><h1 class="display">belajar pemrograman r</h1><p>${up ? 'Buat akun siswa dengan kode kelas dari mentor.' : 'Masuk untuk melanjutkan progres belajarmu dari perangkat mana pun.'}</p></section>
-  <div class="authbox"><div class="tabs2"><button class="${up ? '' : 'on'}" data-act="authmode" data-up="0">Masuk</button><button class="${up ? 'on' : ''}" data-act="authmode" data-up="1">Daftar</button></div>
+  const up = AUTHMODE === 'up', fg = AUTHMODE === 'forgot';
+  const sub = fg ? 'Masukkan emailmu, kami kirim link untuk membuat password baru.' : up ? 'Buat akun siswa dengan kode kelas dari mentor.' : 'Masuk untuk melanjutkan progres belajarmu dari perangkat mana pun.';
+  const tabs = fg ? '' : `<div class="tabs2"><button class="${up ? '' : 'on'}" data-act="authmode" data-mode="in">Masuk</button><button class="${up ? 'on' : ''}" data-act="authmode" data-mode="up">Daftar</button></div>`;
+  return `<section class="hero"><h1 class="display">${fg ? 'lupa password' : 'belajar pemrograman r'}</h1><p>${sub}</p></section>
+  <div class="authbox">${tabs}
     <form id="authform" novalidate>
       ${up ? '<input class="in" name="name" placeholder="Nama lengkap" autocomplete="name" maxlength="80">' : ''}
       <input class="in" name="email" type="email" placeholder="Email" autocomplete="email">
-      <input class="in" name="password" type="password" placeholder="Password (minimal 6 karakter)" autocomplete="${up ? 'new-password' : 'current-password'}">
-      ${up ? '<input class="in" name="code" placeholder="Kode kelas" autocomplete="off" autocapitalize="characters"><p class="help">Mentor: daftar dengan email mentor dan kosongkan kode kelas.</p>' : ''}
+      ${fg ? '' : `<input class="in" name="password" type="password" placeholder="Password (minimal 6 karakter)" autocomplete="${up ? 'new-password' : 'current-password'}">`}
+      ${up ? '<input class="in" name="code" placeholder="Kode kelas" autocomplete="off" autocapitalize="characters"><p class="help">Kode kelas diberikan oleh mentor.</p>' : ''}
       <p class="amsg" id="amsg" role="alert"></p>
-      <button class="btn btn-block" type="submit">${up ? 'Buat akun' : 'Masuk'}</button>
+      <button class="btn btn-block" type="submit">${fg ? 'Kirim link reset' : up ? 'Buat akun' : 'Masuk'}</button>
+      ${AUTHMODE === 'in' ? '<button type="button" class="btn btn-ghost btn-sm" data-act="authmode" data-mode="forgot">Lupa password?</button>' : ''}
+      ${fg ? '<button type="button" class="btn btn-ghost btn-sm" data-act="authmode" data-mode="in">← Kembali masuk</button><p class="help">Email tidak datang? Minta mentor mereset passwordmu ke password default.</p>' : ''}
     </form></div>`;
+}
+
+function pwView() {
+  const forced = S.mustChange || S.recovery;
+  const why = S.recovery ? 'Buat password baru untuk akunmu.' : S.mustChange ? 'Kamu masih memakai password default. Ganti sekarang supaya akunmu aman.' : 'Pilih password baru, minimal 6 karakter.';
+  return `<section class="hero"><h1 class="display">ganti password</h1><p>${why}</p></section>
+  <div class="authbox"><form id="pwform" novalidate>
+    <input class="in" name="pw" type="password" placeholder="Password baru (minimal 6 karakter)" autocomplete="new-password">
+    <input class="in" name="pw2" type="password" placeholder="Ulangi password baru" autocomplete="new-password">
+    <p class="amsg" id="amsg" role="alert"></p>
+    <button class="btn btn-block" type="submit">Simpan password</button>
+    ${forced ? '<button type="button" class="btn btn-ghost btn-sm" data-act="logout">Keluar</button>' : '<a class="btn btn-ghost btn-sm" href="#/mentor">Batal</a>'}
+  </form></div>`;
 }
 
 function render(keep) {
@@ -117,6 +134,7 @@ function render(keep) {
   if (BOOTERR) html = `<section class="hero"><h1 class="display">gagal terhubung</h1><p>${esc(BOOTERR)}</p><div class="btns"><button class="btn" onclick="location.reload()">Coba lagi</button></div></section>`;
   else if (!Auth.ready) html = '<section class="hero"><h1 class="display">memuat…</h1></section>';
   else if (!S.user) html = authView();
+  else if (S.recovery || S.mustChange || a === 'password') html = pwView();
   else html = a === 'unit' ? guide(+b) : a === 'data' ? datasets() : a === 'mentor' ? mentorPage() : home();
   $('#view').innerHTML = html;
   scrollTo({ top: keep ? y : 0, behavior: 'instant' });
@@ -129,7 +147,20 @@ document.addEventListener('click', e => {
   const a = b.dataset.act;
   if (a === 'lesson') startLesson(b.dataset.id);
   else if (a === 'ck') { Auth.toggleCheck(+b.dataset.n, +b.dataset.i); render(true); }
-  else if (a === 'authmode') { AUTHUP = b.dataset.up === '1'; render(); }
+  else if (a === 'authmode') { AUTHMODE = b.dataset.mode; render(); }
+  else if (a === 'resetpw') {
+    if (ARM !== b.dataset.id) { ARM = b.dataset.id; render(true); return; }
+    const who = ROSTER.find(s => s.id === ARM)?.full_name || 'siswa';
+    Auth.resetStudent(ARM).then(() => toast(`Password ${who} direset ke 123456. Siswa wajib menggantinya saat masuk.`)).catch(err => toast(err.message)).finally(() => { ARM = null; render(true); });
+  }
+  else if (a === 'addmentor') {
+    const email = $('#mentoremail').value.trim(), name = $('#mentorname').value.trim(), m = $('#mmsg');
+    if (!email) { m.className = 'amsg'; m.textContent = 'Isi email mentor.'; return; }
+    b.disabled = true;
+    Auth.addMentor(email, name)
+      .then(() => { toast(`Mentor ${email} ditambahkan. Password awal: 123456.`); ROSTER = null; render(true); })
+      .catch(err => { m.className = 'amsg'; m.textContent = err.message; b.disabled = false; });
+  }
   else if (a === 'logout') Auth.signOut().then(() => { location.hash = '#/'; render(); });
   else if (a === 'detail') { OPEN = OPEN === b.dataset.id ? null : b.dataset.id; render(true); }
   else if (a === 'refresh') { refreshRoster(); render(true); }
@@ -142,19 +173,36 @@ document.addEventListener('keydown', e => {
   if ((e.key === 'Enter' || e.key === ' ') && ['ck', 'detail'].includes(e.target.dataset?.act)) { e.preventDefault(); e.target.click(); }
 });
 document.addEventListener('submit', async e => {
-  if (e.target.id !== 'authform') return;
+  const isPw = e.target.id === 'pwform';
+  if (e.target.id !== 'authform' && !isPw) return;
   e.preventDefault();
   const f = new FormData(e.target), msg = $('#amsg'), btn = $('button[type=submit]', e.target);
-  const email = f.get('email').trim(), pw = f.get('password'), name = (f.get('name') || '').trim();
-  const bad = !email || !pw ? 'Isi email dan password.' : AUTHUP && !name ? 'Isi nama lengkap.' : AUTHUP && pw.length < 6 ? 'Password minimal 6 karakter.' : '';
   msg.className = 'amsg';
+
+  if (isPw) {
+    const pw = f.get('pw');
+    const bad = pw.length < 6 ? 'Password minimal 6 karakter.' : pw !== f.get('pw2') ? 'Kedua password tidak sama.' : pw === '123456' ? 'Pilih password selain password default.' : '';
+    if (bad) { msg.textContent = bad; return; }
+    btn.disabled = true;
+    try { await Auth.changePassword(pw); toast('Password berhasil diganti.'); location.hash = '#/'; render(); }
+    catch (err) { msg.textContent = err.message; btn.disabled = false; }
+    return;
+  }
+
+  const up = AUTHMODE === 'up', fg = AUTHMODE === 'forgot';
+  const email = f.get('email').trim(), pw = f.get('password') || '', name = (f.get('name') || '').trim();
+  const bad = !email ? 'Isi email.' : fg ? '' : !pw ? 'Isi password.' : up && !name ? 'Isi nama lengkap.' : up && pw.length < 6 ? 'Password minimal 6 karakter.' : '';
   if (bad) { msg.textContent = bad; return; }
   btn.disabled = true; msg.textContent = '';
   try {
-    if (AUTHUP && (await Auth.signUp(email, pw, name, (f.get('code') || '').trim())) === 'confirm') {
+    if (fg) {
+      await Auth.forgot(email);
+      msg.className = 'amsg ok'; msg.textContent = 'Jika email terdaftar, link reset sudah dikirim. Cek kotak masuk dan folder spam.'; btn.disabled = false; return;
+    }
+    if (up && (await Auth.signUp(email, pw, name, (f.get('code') || '').trim())) === 'confirm') {
       msg.className = 'amsg ok'; msg.textContent = 'Akun dibuat. Cek emailmu untuk konfirmasi, lalu masuk.'; btn.disabled = false; return;
     }
-    if (!AUTHUP) await Auth.signIn(email, pw);
+    if (!up) await Auth.signIn(email, pw);
     location.hash = '#/'; render();
   } catch (err) { msg.textContent = err.message; btn.disabled = false; }
 });
