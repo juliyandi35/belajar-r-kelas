@@ -4,7 +4,7 @@ const SET_DEF = { sound: true, anim: true, all: false };
 let SET = { ...SET_DEF };
 try { SET = { ...SET_DEF, ...JSON.parse(localStorage.getItem(SET_KEY) || '{}') }; } catch { /* storage diblokir: pakai default */ }
 
-const EMPTY = () => ({ user: null, uid: null, role: null, name: '', email: '', mustChange: false, recovery: false, xp: 0, streak: 0, last: '', done: {}, checks: {} });
+const EMPTY = () => ({ user: null, uid: null, role: null, name: '', email: '', mustChange: false, recovery: false, xp: 0, streak: 0, last: '', done: {}, checks: {}, tasks: {} });
 const S = { ...EMPTY(), set: SET };
 const resetState = () => Object.assign(S, EMPTY());
 const save = () => { try { localStorage.setItem(SET_KEY, JSON.stringify(S.set)); } catch { /* abaikan */ } };
@@ -17,6 +17,11 @@ const ALL = COURSE.flatMap(u => u.lessons.map((l, i) => ({ u, l, i, id: u.n + '.
 const isDone = id => !!S.done[id];
 const current = () => ALL.find(x => !isDone(x.id));
 const isOpen = id => S.set.all || S.role === 'mentor' || !current() || ALL.findIndex(x => x.id === id) <= ALL.indexOf(current());
+
+// Tugas (stage terakhir tiap unit): terbuka setelah kuis unit selesai. Tidak menahan unit berikutnya.
+const quizId = n => n + '.' + (COURSE[n - 1].lessons.length - 1);
+const taskDone = n => !!S.tasks[n];
+const taskOpen = n => S.set.all || S.role === 'mentor' || isDone(quizId(n));
 
 function finishLesson(id, xp, acc) {
   const prev = S.done[id];

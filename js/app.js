@@ -23,9 +23,14 @@ function nodeHtml(it, k) {
   return `<div class="nwrap ${cur ? 'cur' : ''}" style="transform:translateX(${off}px)">${cur ? '<span class="tip">MULAI</span>' : ''}<button class="node ${done ? 'done' : open ? '' : 'lock'}" data-act="lesson" data-id="${it.id}" ${open ? '' : 'disabled'} aria-label="${esc(it.l.name)}">${done ? '✔' : open ? '★' : '🔒'}</button><span class="nname">${esc(it.l.name)}</span></div>`;
 }
 
+function tugasNode(n, k) {
+  const done = taskDone(n), open = taskOpen(n);
+  return `<div class="nwrap" style="transform:translateX(${[0, 44, 66, 44][k % 4]}px)"><a class="node trophy ${done ? 'done' : open ? '' : 'lock'}" href="#/tugas/${n}" ${open ? '' : 'aria-disabled="true" tabindex="-1"'} aria-label="Tugas unit ${n}">${done ? '✔' : open ? '📝' : '🔒'}</a><span class="nname">Tugas</span></div>`;
+}
+
 function unitHtml(u) {
   const nodes = u.lessons.map((_, i) => nodeHtml(ALL.find(x => x.id === u.n + '.' + i), i)).join('') +
-    `<div class="nwrap" style="transform:translateX(44px)"><a class="node trophy" href="#/unit/${u.n}" aria-label="Tugas dan checklist unit ${u.n}">🏆</a><span class="nname">Tugas</span></div>`;
+    tugasNode(u.n, u.lessons.length);
   return `<div class="u c${(u.n - 1) % 3}"><div class="unit"><div><small>UNIT ${u.n}</small><h3>${esc(u.title)}</h3><p>${esc(u.blurb)}</p></div><a class="btn btn-sm btn-white" href="#/unit/${u.n}">Panduan</a></div><div class="nodes">${nodes}</div></div>`;
 }
 
@@ -46,7 +51,7 @@ function home() {
     <section class="panel path"><div class="label">Jalur belajar</div>${COURSE.map(unitHtml).join('')}</section>
     <section class="panel side"><div class="label">Progresmu</div>
       <div class="stat-line"><span class="streak"><span>🔥</span><b>${streakNow()}</b></span><span class="badge b-gold">⚡ ${S.xp} XP</span><span class="badge b-green">${nDone}/${ALL.length} pelajaran</span></div>
-      ${prog('Pelajaran', pct(nDone, ALL.length), '')}${prog('Unit selesai', pct(unitsDone, COURSE.length), 'blue')}${prog('Checklist', pct(checkedTotal(), checkTotal), 'orange')}
+      ${prog('Pelajaran', pct(nDone, ALL.length), '')}${prog('Unit selesai', pct(unitsDone, COURSE.length), 'blue')}${prog('Checklist', pct(checkedTotal(), checkTotal), 'orange')}${prog('Tugas', pct(Object.keys(S.tasks).length, COURSE.length), 'gold')}
     </section>
     <section class="panel side"><div class="label">Mentor</div>
       <div class="card mentor-card"><div class="body"><span class="tag t-blue">MENTOR</span><h3><span class="avatar">${esc(m.name[0])}</span>${esc(m.name)}</h3><p>${esc(m.bio)}</p></div><div class="foot"><span>${esc(m.role)}</span><a href="#/mentor">${S.role === 'mentor' ? 'Dasbor' : 'Profil'}</a></div></div>
@@ -55,8 +60,8 @@ function home() {
       <p class="help">"Buka semua unit" melewati urutan belajar, berguna untuk mentor yang ingin melihat seluruh materi.</p></section>
     <section class="panel side dark"><div class="label">Capstone</div>
       <p class="help">Puncak kursus: laporan analisis end-to-end dengan R Markdown.</p>
-      <div class="stat-line"><span class="badge ${capDone === 3 ? 'b-green' : capDone ? 'b-blue' : 'b-gold'}">${capDone === 3 ? 'Selesai' : capDone ? 'Berjalan' : 'Menunggu'}</span></div>
-      ${prog('Unit 14', pct(capDone, 3), 'gold')}${prog('Seluruh kursus', pct(nDone, ALL.length), '')}</section>
+      <div class="stat-line"><span class="badge ${capDone === cap.lessons.length ? 'b-green' : capDone ? 'b-blue' : 'b-gold'}">${capDone === cap.lessons.length ? 'Selesai' : capDone ? 'Berjalan' : 'Menunggu'}</span></div>
+      ${prog('Unit 14', pct(capDone, cap.lessons.length), 'gold')}${prog('Seluruh kursus', pct(nDone, ALL.length), '')}</section>
   </div>`;
 }
 
@@ -77,10 +82,29 @@ function guide(n) {
     <section class="panel"><div class="label">Checklist kompetensi</div>
       ${g.cek.map((t, i) => `<div class="ck ${chk.includes(i) ? 'on' : ''}" data-act="ck" data-n="${n}" data-i="${i}" role="checkbox" aria-checked="${chk.includes(i)}" tabindex="0"><span class="box">${chk.includes(i) ? '✔' : ''}</span><span>${esc(t)}</span></div>`).join('')}
       <div style="margin-top:16px">${prog('Tercentang', pct(chk.length, g.cek.length), 'orange')}</div></section>
-    <section class="panel"><div class="label">Tugas</div><div class="task">${esc(g.tugas)}</div>
+    <section class="panel"><div class="label">Tugas</div><div class="task">${esc(g.tugas)}</div><p><a class="btn btn-sm" href="#/tugas/${n}">${taskDone(n) ? 'Lihat pengumpulan' : 'Buka halaman tugas'}</a></p>
       ${g.data.length ? `<p class="help">Berkas untuk tugas ini:</p><div class="files">${g.data.map(f => `<a class="btn btn-sm btn-secondary" href="datasets/${f}" download>${esc(f)}</a>`).join('')}</div>` : '<p class="help">Tugas ini tidak butuh berkas data. Cukup RStudio.</p>'}</section>
     <section class="panel dark"><div class="label">Pelajaran unit ini</div>${lessons}
       ${g.rubrik ? `<div class="label" style="margin-top:32px">Rubrik penilaian</div>${g.rubrik.map(([t, v]) => `<div class="prow"><span class="pname">${esc(t)}</span><div class="bar"><i class="${v >= 15 ? 'gold' : ''}" style="width:${v * 6}%"></i></div><span class="pval">${v}%</span></div>`).join('')}` : ''}</section>
+  </div>`;
+}
+
+function tugasView(n) {
+  const u = COURSE.find(x => x.n === n);
+  if (!u) return '<section class="panel"><p>Unit tidak ditemukan. <a href="#/" class="b-blue badge">Kembali</a></p></section>';
+  const g = u.guide, t = S.tasks[n], open = taskOpen(n);
+  const status = t
+    ? `<span class="badge b-green">Sudah dikumpulkan</span><p class="help" style="margin-top:12px"><b>${esc(t.file_name)}</b> (${(t.size_bytes / 1024).toFixed(1)} KB)<br>Dikumpulkan ${esc(new Date(t.submitted_at).toLocaleString('id-ID'))}</p>`
+    : '<span class="badge b-gold">Belum dikumpulkan</span>';
+  return `<a class="btn btn-ghost btn-sm crumb" href="#/">← Jalur belajar</a>
+  <section class="hero"><h1 class="display">tugas unit ${n}</h1><p>${esc(u.title)}</p></section>
+  <div class="grid">
+    <section class="panel"><div class="label">Instruksi tugas</div><div class="task">${esc(g.tugas)}</div>
+      ${g.data.length ? `<p class="help">Berkas untuk tugas ini:</p><div class="files">${g.data.map(f => `<a class="btn btn-sm btn-secondary" href="datasets/${f}" download>${esc(f)}</a>`).join('')}</div>` : ''}</section>
+    <section class="panel"><div class="label">Kumpulkan tugas</div>${status}
+      ${open ? `<div class="upload"><input class="in" id="rmdfile" type="file" accept=".Rmd,.rmd"><button class="btn" data-act="upload" data-n="${n}">${t ? 'Unggah ulang' : 'Unggah tugas'}</button></div>
+        <p class="help">Hanya berkas R Markdown (.Rmd), maksimal 2 MB. Unggah ulang akan menggantikan berkas sebelumnya. Kumpulkan file sumber .Rmd, bukan hasil knit (.html atau .pdf).</p><p class="amsg" id="tmsg" role="alert"></p>`
+        : '<p class="help" style="margin-top:12px">Tugas terbuka setelah kamu menyelesaikan Kuis unit ini.</p>'}</section>
   </div>`;
 }
 
@@ -135,7 +159,7 @@ function render(keep) {
   else if (!Auth.ready) html = '<section class="hero"><h1 class="display">memuat…</h1></section>';
   else if (!S.user) html = authView();
   else if (S.recovery || S.mustChange || a === 'password') html = pwView();
-  else html = a === 'unit' ? guide(+b) : a === 'data' ? datasets() : a === 'mentor' ? mentorPage() : home();
+  else html = a === 'unit' ? guide(+b) : a === 'tugas' ? tugasView(+b) : a === 'data' ? datasets() : a === 'mentor' ? mentorPage() : home();
   $('#view').innerHTML = html;
   scrollTo({ top: keep ? y : 0, behavior: 'instant' });
   if (S.role === 'mentor' && a === 'mentor' && ROSTER === null) refreshRoster();
@@ -162,6 +186,23 @@ document.addEventListener('click', e => {
       .catch(err => { m.className = 'amsg'; m.textContent = err.message; b.disabled = false; });
   }
   else if (a === 'logout') Auth.signOut().then(() => { location.hash = '#/'; render(); });
+  else if (a === 'upload') {
+    const n = +b.dataset.n, f = $('#rmdfile').files[0], m = $('#tmsg');
+    m.className = 'amsg';
+    if (!f) { m.textContent = 'Pilih berkas .Rmd terlebih dahulu.'; return; }
+    b.disabled = true; m.className = 'amsg ok'; m.textContent = 'Mengunggah…';
+    Auth.submitTask(n, f).then(() => { toast('Tugas berhasil dikumpulkan.'); render(true); }).catch(err => { m.className = 'amsg'; m.textContent = err.message; b.disabled = false; });
+  }
+  else if (a === 'dl') {
+    Auth.taskUrl(b.dataset.uid, +b.dataset.n)
+      .then(async url => {
+        const blob = await (await fetch(url)).blob();
+        const link = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: b.dataset.name });
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(link.href), 2000);
+      })
+      .catch(err => toast(err.message));
+  }
   else if (a === 'detail') { OPEN = OPEN === b.dataset.id ? null : b.dataset.id; render(true); }
   else if (a === 'refresh') { refreshRoster(); render(true); }
   else if (a === 'setcode') {

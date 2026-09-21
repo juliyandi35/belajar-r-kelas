@@ -158,7 +158,7 @@ textarea.in { height: auto; padding: 14px 16px; resize: vertical; font-family: u
 .node:active { transform: translateY(6px); box-shadow: none; }
 .node.done { background: var(--golden); box-shadow: 0 6px 0 #D4A600; }
 .node.lock { background: var(--border-color); box-shadow: 0 6px 0 #CFCFCF; color: var(--nav-text); font-size: 24px; pointer-events: none; }
-.node.trophy { background: var(--dark-blue); box-shadow: 0 6px 0 #05041f; }
+.node.trophy:not(.done):not(.lock) { background: var(--dark-blue); box-shadow: 0 6px 0 #05041f; }
 .nname { font-size: 12px; font-weight: 800; color: var(--gray-light); text-transform: uppercase; letter-spacing: .5px; }
 .nwrap.cur { margin-top: 30px; }
 .nwrap .tip { bottom: calc(100% + 4px); animation: bob 1.2s ease-in-out infinite; }
@@ -197,12 +197,15 @@ tr.rowb { cursor: pointer; }
 tr.rowb:hover td { background: rgba(255, 255, 255, .04); }
 td small { color: rgba(255, 255, 255, .45); font-weight: 600; }
 .detail { display: grid; gap: 8px; padding: 8px 0 16px; }
-.dr { display: grid; grid-template-columns: 64px 1fr auto auto auto 110px; gap: 10px; align-items: center; font-size: 13px; }
+.dr { display: grid; grid-template-columns: 64px 1fr auto 110px 96px; gap: 10px; align-items: center; font-size: 13px; }
+.bs { display: flex; gap: 6px; }
+.upload { display: grid; gap: 12px; margin: 16px 0 12px; }
+.upload .in { padding: 10px 12px; height: auto; font-size: 13px; }
 .dr .dt { color: rgba(255, 255, 255, .7); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dr .dc { color: rgba(255, 255, 255, .5); font-size: 12px; font-weight: 700; text-align: right; }
 .badge.dim { color: rgba(255, 255, 255, .35); background: rgba(255, 255, 255, .08); }
 @media (max-width: 900px) { .tabbar:empty { display: none; } .out { display: none; } }
-@media (max-width: 600px) { .dr { grid-template-columns: 56px auto auto auto; } .dr .dt, .dr .dc { display: none; } }
+@media (max-width: 600px) { .dr { grid-template-columns: 56px auto auto; } .dr .dt, .dr .dc { display: none; } }
 
 /* ---------- lesson player ---------- */
 .lesson { position: fixed; inset: 0; z-index: 200; background: #fff; display: flex; flex-direction: column; }

@@ -1,5 +1,7 @@
 // Registry kursus + pembuat soal/kartu yang dipakai file js/data/units-*.js
 window.COURSE = [];
+window.EXTRA = {}; // materi tambahan per unit, digabung oleh js/data/assemble.js
+const lesson = (name, cards, qs) => ({ name, cards, qs });
 
 const card = (h, p, code, out) => ({ h, p, code, out });
 const mc = (q, opts, a, why) => ({ t: 'mc', q, opts, a, why });

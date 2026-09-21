@@ -22,17 +22,20 @@ function summarize(s) {
   const pr = (Array.isArray(s.progress) ? s.progress[0] : s.progress) || {};
   const done = s.lessons_done || [];
   const gap = pr.last_day ? days(pr.last_day) : days(s.created_at.slice(0, 10));
-  return { pr, done, n: done.length, xp: done.reduce((n, r) => n + r.xp, 0), chk: (s.checks || []).length, idle: done.length < ALL.length && gap > 7 };
+  return { pr, done, n: done.length, xp: done.reduce((n, r) => n + r.xp, 0), chk: (s.checks || []).length, tasks: (s.submissions || []).length, idle: done.length < ALL.length && gap > 7 };
 }
 
 function detailHtml(s) {
   const got = Object.fromEntries(s.lessons_done.map(r => [r.lesson_id, r]));
   const chk = {};
   s.checks.forEach(c => (chk[c.unit] = (chk[c.unit] || 0) + 1));
-  return `<div class="row" style="margin:4px 0 12px;align-items:center"><button class="btn btn-white btn-sm" data-act="resetpw" data-id="${esc(s.id)}">${ARM === s.id ? 'Yakin? Klik lagi untuk reset' : 'Reset password ke default'}</button><span class="help" style="margin:0">Untuk siswa yang lupa password dan tidak menerima email reset.</span></div><div class="detail">${COURSE.map(u => `<div class="dr"><b>Unit ${u.n}</b><span class="dt">${esc(u.title)}</span>${u.lessons.map((l, i) => {
+  const sub = Object.fromEntries((s.submissions || []).map(r => [r.unit, r]));
+  return `<div class="row" style="margin:4px 0 12px;align-items:center"><button class="btn btn-white btn-sm" data-act="resetpw" data-id="${esc(s.id)}">${ARM === s.id ? 'Yakin? Klik lagi untuk reset' : 'Reset password ke default'}</button><span class="help" style="margin:0">Untuk siswa yang lupa password dan tidak menerima email reset.</span></div><div class="detail">${COURSE.map(u => `<div class="dr"><b>Unit ${u.n}</b><span class="dt">${esc(u.title)}</span><span class="bs">${u.lessons.map((l, i) => {
     const r = got[u.n + '.' + i];
     return r ? `<span class="badge ${r.acc >= 80 ? 'b-green' : r.acc >= 50 ? 'b-blue' : 'b-gold'}" title="${esc(l.name)}: akurasi terbaik">${r.acc}%</span>` : `<span class="badge dim" title="${esc(l.name)}: belum dikerjakan">—</span>`;
-  }).join('')}<span class="dc">Checklist ${chk[u.n] || 0}/${u.guide.cek.length}</span></div>`).join('')}</div>`;
+  }).join('')}</span><span class="dc">Checklist ${chk[u.n] || 0}/${u.guide.cek.length}</span>${sub[u.n]
+    ? `<button class="btn btn-white btn-sm" data-act="dl" data-uid="${esc(s.id)}" data-n="${u.n}" data-name="${esc(sub[u.n].file_name)}" title="${esc(sub[u.n].file_name)}, ${esc(new Date(sub[u.n].submitted_at).toLocaleDateString('id-ID'))}">Tugas ↓</button>`
+    : '<span class="badge dim">Tugas —</span>'}</div>`).join('')}</div>`;
 }
 
 function accountPanel() {
@@ -43,10 +46,10 @@ function dash() {
   if (ROSTER === null) return '<section class="hero"><h1 class="display">kelas r</h1><p>Memuat data siswa…</p></section>';
   const rows = ROSTER.map(s => ({ s, ...summarize(s) }));
   const active = rows.filter(r => r.n > 0).length, finished = rows.filter(r => r.n >= ALL.length).length;
-  const table = rows.length ? `<div class="tscroll"><table><thead><tr><th>Siswa</th><th>XP</th><th>Streak</th><th>Pelajaran</th><th>Checklist</th><th>Aktif</th><th>Status</th></tr></thead><tbody>${rows.map(r => {
+  const table = rows.length ? `<div class="tscroll"><table><thead><tr><th>Siswa</th><th>XP</th><th>Streak</th><th>Pelajaran</th><th>Checklist</th><th>Tugas</th><th>Aktif</th><th>Status</th></tr></thead><tbody>${rows.map(r => {
     const [c, t] = r.n >= ALL.length ? ['b-green', 'Selesai'] : r.idle ? ['b-red', 'Tidak aktif'] : r.n ? ['b-blue', 'Berjalan'] : ['b-gold', 'Belum mulai'];
     const pct = Math.round(r.n / ALL.length * 100);
-    return `<tr class="rowb" data-act="detail" data-id="${esc(r.s.id)}" tabindex="0"><td><b>${esc(r.s.full_name)}</b><br><small>${esc(r.s.email)}</small></td><td>${r.xp}</td><td>🔥 ${r.pr.streak || 0}</td><td><div class="prow" style="margin:0"><div class="bar"><i class="gold" style="width:${pct}%"></i></div><span class="pval">${r.n}/${ALL.length}</span></div></td><td>${r.chk}/${checkTotal}</td><td>${ago(r.pr.last_day)}</td><td><span class="badge ${c}">${t}</span></td></tr>${OPEN === r.s.id ? `<tr><td colspan="7">${detailHtml(r.s)}</td></tr>` : ''}`;
+    return `<tr class="rowb" data-act="detail" data-id="${esc(r.s.id)}" tabindex="0"><td><b>${esc(r.s.full_name)}</b><br><small>${esc(r.s.email)}</small></td><td>${r.xp}</td><td>🔥 ${r.pr.streak || 0}</td><td><div class="prow" style="margin:0"><div class="bar"><i class="gold" style="width:${pct}%"></i></div><span class="pval">${r.n}/${ALL.length}</span></div></td><td>${r.chk}/${checkTotal}</td><td>${r.tasks}/${COURSE.length}</td><td>${ago(r.pr.last_day)}</td><td><span class="badge ${c}">${t}</span></td></tr>${OPEN === r.s.id ? `<tr><td colspan="8">${detailHtml(r.s)}</td></tr>` : ''}`;
   }).join('')}</tbody></table></div>` : '<p class="help">Belum ada siswa. Bagikan link kursus dan kode kelas di atas.</p>';
 
   return `<section class="hero"><h1 class="display">kelas r</h1><p>${rows.length} siswa terdaftar, ${active} sudah mulai belajar, ${finished} selesai.</p></section>
