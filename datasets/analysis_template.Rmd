@@ -1,0 +1,109 @@
+---
+title: "Analisis [Ganti dengan Topik Pilihan Anda]"
+author: "[Nama Anda]"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+  pdf_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(lubridate)
+library(ggplot2)
+library(knitr)
+```
+
+<!--
+TEMPLATE FINAL CAPSTONE PROJECT
+================================
+Ini adalah kerangka awal untuk analysis.Rmd Anda. Ikuti struktur di bawah ini
+dan isi setiap bagian sesuai dataset dan pertanyaan analisis yang Anda pilih.
+Hapus komentar HTML seperti ini setelah dibaca.
+-->
+
+# Pendahuluan
+
+Tuliskan di sini:
+
+- Latar belakang singkat (mengapa analisis ini dilakukan / konteksnya apa).
+- Dataset yang digunakan (dari folder `data/`, boleh lebih dari satu digabung).
+- Pertanyaan analisis yang ingin dijawab (1-2 pertanyaan).
+
+# Import dan Inspeksi Data
+
+```{r import}
+# Ganti dengan dataset pilihan Anda
+data_utama <- read_csv("../data/data_peserta_pelatihan.csv")
+```
+
+```{r inspeksi}
+glimpse(data_utama)
+summary(data_utama)
+```
+
+Tuliskan interpretasi singkat: berapa baris/kolom, tipe data apa saja, dan masalah apa yang sudah terlihat
+sejak awal.
+
+# Identifikasi Masalah Kualitas Data
+
+```{r cek-kualitas}
+colSums(is.na(data_utama))
+sum(duplicated(data_utama))
+```
+
+Tuliskan temuan: kolom mana yang punya missing values, apakah ada duplikasi, teks yang tidak konsisten, dsb.
+
+# Data Cleaning
+
+```{r cleaning}
+data_bersih <- data_utama %>%
+  distinct(across(everything())) # sesuaikan dengan kolom kunci yang relevan
+  # tambahkan langkah cleaning lain: drop_na()/replace_na(), str_trim(), dst.
+```
+
+# Transformasi Data
+
+```{r transformasi}
+# Tambahkan kolom turunan yang relevan dengan pertanyaan analisis Anda,
+# misalnya dengan mutate() dan case_when()
+```
+
+# Analisis Data
+
+```{r analisis}
+# Statistik deskriptif dan/atau uji yang relevan (mean, group_by+summarise, cor, t.test, dst.)
+```
+
+# Tabel Ringkasan
+
+```{r tabel}
+# kable(hasil_ringkasan, digits = 1)
+```
+
+# Visualisasi
+
+```{r visualisasi-1}
+# Grafik pertama (misalnya distribusi atau perbandingan kategori)
+```
+
+```{r visualisasi-2}
+# Grafik kedua (misalnya hubungan dua variabel atau tren waktu)
+```
+
+# Interpretasi Hasil
+
+Tuliskan narasi: apa yang ditemukan dari analisis di atas, dikaitkan dengan pertanyaan analisis pada
+Pendahuluan. Sertakan juga batasan (limitasi) dari analisis ini.
+
+# Kesimpulan
+
+Ringkas 2-4 poin kesimpulan utama, didukung angka konkret dari hasil analisis Anda.

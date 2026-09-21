@@ -1,0 +1,157 @@
+id_peserta,nama,jenis_kelamin,tanggal_lahir,kode_unit,unit_kerja,kota,no_hp,email,tanggal_daftar,status_kehadiran,nilai_pretest,nilai_posttest
+P0009,oki santoso,L,,UK06,Sekretariat Jenderal,Jakarta,08901987737,oki.santoso@bela-negara.go.id,2025-02-17,Hadir,71,77
+P0058,Wahyu Santoso,p,20-05-1981,UK07,balai diklat bela negara wilayah iii,Makassar,08839512969,wahyu.santoso@bela-negara.go.id,12/02/2025,Hadir,57,71
+P0036,gunawan kusuma,L,,UK03,Balai Diklat Bela Negara Wilayah II,Surabaya,08678883823,gunawan.kusuma@bela-negara.go.id,2025-08-03,Hadir,52,79
+P0129,budi handayani,L,26-04-1987,UK08,Pusat Data dan Informasi,Jakarta,08888183451,budi.handayani@bela-negara.go.id,2025-04-26,hadir,62,96
+P0020,Rian Santoso,l,14/12/1981,UK04,kanwil sumatera,Medan,08784305700,rian.santoso@bela-negara.go.id,20/06/2025,HADIR,47,66
+P0052,Zainal Lestari,p,09/07/1999,UK02,BALAI DIKLAT BELA NEGARA WILAYAH I ,Bandung,08378438733,zainal.lestari@bela-negara.go.id,18/06/2025,Hadir,65,82
+P0099,Hesti Setiawan,Perempuan,14 Juni 1999,UK03,Balai diklat Wilayah 2,Surabaya,08954664338,hesti.setiawan@bela-negara.go.id,17/02/2025,hadir,63,67
+P0002,Ahmad Nugroho,Laki-laki,04/06/1986,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,08556770619,ahmad.nugroho@bela-negara.go.id,04/09/2025,Hadir,75,84
+P0033,Oki Rahayu,P,1990-02-24,UK02,balai diklat bela negara wilayah 1,Bandung,08715638893,oki.rahayu@bela-negara.go.id,2025-05-04,Hadir,54,77
+P0031,hesti pratama,Perempuan,22 Oktober 1998,UK04,kanwil sumatera,Medan,08736452832,hesti.pratama@bela-negara.go.id,09/06/2025,hadir,40,73
+P0119,maya permata,p,13-06-1987,UK08,PUSAT DATA DAN INFORMASI,Jakarta,08607123944,maya.permata@bela-negara.go.id,2025-09-06,HADIR,69,82
+P0089,lukman lestari,l,1981-01-02,UK07,balai diklat bela negara wilayah iii,Makassar,08709712957,lukman.lestari@bela-negara.go.id,20/06/2025,Hadir,65,84
+P0035,tono wijaya,l,18 Februari 1987,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,08894786401,tono.wijaya@bela-negara.go.id,28/05/2025,Hadir,43,49
+P0028,Lukman Setiawan,p,27/04/1987,UK01,Direktorat Bina Potensi Bela Negara,Jakarta,08403117636,lukman.setiawan@bela-negara.go.id,23/08/2025,,63,73
+P0130,Sari Nugroho,p,28/05/1998,UK05,Kanwil Kalimantan ,Balikpapan,08621994652,sari.nugroho@bela-negara.go.id,2025-03-08,HADIR,60,75
+P0106,Hesti Hidayat,P,1997-07-14,UK08,Pusat Data dan Informasi,Jakarta,08424411424,hesti.hidayat@bela-negara.go.id,2025-06-03,Hadir,57,81
+P0101,Tono Wijaya,p,09/07/1980,UK05,kantor wilayah bela negara kalimantan,Balikpapan,+628842225232,,03/01/2025,Hadir,58,84
+P0059,Endah Wulandari,l,09-03-1980,UK01,Dit. Bina Potensi Bela Negara,Jakarta,08541102438,endah.wulandari@bela-negara.go.id,2025-02-05,Hadir,73,79
+P0107,Umar Wijaya,P,10/06/1986,UK04,kanwil sumatera,Medan,08342968239,umar.wijaya@bela-negara.go.id,2025-04-13,hadir,60,78
+P0102,Eko Susanto,Perempuan,1992-02-22,UK08,Pusdatin,Jakarta,08542990334,eko.susanto@bela-negara.go.id,2025-04-27,,41,60
+P0027,eko handayani,Laki-laki,11-08-1986,UK07,Balai Diklat Wilayah 3,Makassar,08585668371,eko.handayani@bela-negara.go.id,2025-02-16,HADIR,74,75
+P0034,  AHMAD WULANDARI  ,L,28 November 1984,UK01,Dit. Bina Potensi Bela Negara,Jakarta,08115770422,ahmad.wulandari@bela-negara.go.id,09/01/2025,Hadir,44,69
+P0115,Indra Handayani,Laki-laki,19 November 1985,UK07,Balai Diklat Wilayah 3,Makassar,08895955645,indra.handayani@bela-negara.go.id,2025-03-13,HADIR,64,84
+P0087,Putri Purnomo,Laki-laki,17 Juli 1982,UK08,Pusat Data dan Informasi,Jakarta,+628376920597,putri.purnomo@bela-negara.go.id,2025-08-10,,46,73
+P0128,Indra Setiawan,P,17/09/1995,UK08,PUSAT DATA DAN INFORMASI,Jakarta,08447154919,indra.setiawan@bela-negara.go.id,2025-08-18,Tidak Hadir,46,61
+P0095,Gita Nugroho,Perempuan,11-05-1986,UK08,PUSAT DATA DAN INFORMASI,Jakarta,08214896008,gita.nugroho@bela-negara.go.id,2025-03-14,Hadir,65,96
+P0073,Joko Ramadhan,P,03/01/1999,UK08,Pusdatin,Jakarta,08299854536,joko.ramadhan@bela-negara.go.id,2025-02-02,Tidak Hadir,69,73
+P0124,Sari Susanto,P,21 Maret 1985,UK07,balai diklat bela negara wilayah iii,Makassar,08884310554,,07/04/2025,,44,50
+P0074,Farhan Ramadhan,L,14/05/1984,UK04,Kantor Wil. Bela Negara Sumatera,Medan,08407988844,farhan.ramadhan@bela-negara.go.id,2025-06-03,Tidak Hadir,70,71
+P0094,Gunawan Kusuma,Laki-laki,1983-10-24,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,08959909397,gunawan.kusuma@bela-negara.go.id,23/06/2025,Hadir,48,48
+P0066,Tono Wulandari,p,07-11-1998,UK01,DIREKTORAT BINA POTENSI BELA NEGARA,Jakarta,08743531028,tono.wulandari@bela-negara.go.id,2025-06-23,hadir,51,53
+P0090,Rian Purnomo,p,11/06/1980,UK05,Kanwil Kalimantan ,Balikpapan,08846161977,rian.purnomo@bela-negara.go.id,20/01/2025,Hadir,54,57
+P0025,Eko Setiawan,P,11 Juli 1993,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,08368048838,eko.setiawan@bela-negara.go.id,28/01/2025,Tidak Hadir,40,62
+P0004,Fitri Wulandari,P,1988-11-23,UK08,Pusdatin,Jakarta,08174842788,fitri.wulandari@bela-negara.go.id,07/02/2025,Hadir,71,83
+P0098,Maya Setiawan,Laki-laki,19/12/1998,UK06,Setjen,Jakarta,+628564964499,maya.setiawan@bela-negara.go.id,22/07/2025,HADIR,47,65
+P0138,Fitri Ramadhan,L,07/05/1980,UK01,Direktorat Bina Potensi Bela Negara,Jakarta,08609499515,fitri.ramadhan@bela-negara.go.id,23/07/2025,Hadir,74,91
+P0088,Indra Firmansyah,Laki-laki,1981-10-18,UK01,DIREKTORAT BINA POTENSI BELA NEGARA,Jakarta,08462233658,indra.firmansyah@bela-negara.go.id,2025-02-05,Tidak Hadir,63,84
+P0053,  DEWI HANDAYANI  ,P,1990-04-05,UK01,Direktorat Bina Potensi Bela Negara,Jakarta,08804475523,dewi.handayani@bela-negara.go.id,2025-03-26,Hadir,49,57
+P0055,oki purnomo,l,01/11/1994,UK01,Dit. Bina Potensi Bela Negara,Jakarta,08618151684,oki.purnomo@bela-negara.go.id,03/02/2025,hadir,49,53
+P0054,  BELLA NUGROHO  ,L,,UK03,Balai Diklat Bela Negara Wilayah II,Surabaya,08431879109,bella.nugroho@bela-negara.go.id,16/02/2025,,63,95
+P0014,Eko Hidayat,L,04/10/1999,UK01,DIREKTORAT BINA POTENSI BELA NEGARA,Jakarta,08745449324,,12/04/2025,Hadir,68,87
+P0071,Tono Handayani,Laki-laki,1996-07-06,UK07,balai diklat bela negara wilayah iii,Makassar,+628275194357,tono.handayani@bela-negara.go.id,2025-02-23,Hadir,45,55
+P0146,Zainal Permata,Laki-laki,25/03/1986,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,08318542478,zainal.permata@bela-negara.go.id,15/04/2025,Tidak Hadir,56,63
+P0148,  DEWI LESTARI  ,L,12/07/1986,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,+628432258076,dewi.lestari@bela-negara.go.id,2025-08-26,Hadir,61,68
+P0143,  JOKO PERMATA  ,Perempuan,19-05-1986,UK01,Dit. Bina Potensi Bela Negara,Jakarta,08418783398,joko.permata@bela-negara.go.id,2025-04-24,Hadir,40,
+P0050,Bella Wulandari,Perempuan,15-02-1997,UK01,Dit. Bina Potensi Bela Negara,Jakarta,08965398338,bella.wulandari@bela-negara.go.id,2025-02-22,Tidak Hadir,41,76
+P0117,Maya Pratama,l,22 Maret 1996,UK04,Kantor Wil. Bela Negara Sumatera,Medan,08446052144,maya.pratama@bela-negara.go.id,14/05/2025,Tidak Hadir,44,67
+P0123,Gunawan Purnomo,Perempuan,,UK02,BALAI DIKLAT BELA NEGARA WILAYAH I ,Bandung,08241378915,gunawan.purnomo@bela-negara.go.id,2025-03-24,hadir,51,86
+P0006,Bella Susanto,Perempuan,09/09/1994,UK07,balai diklat bela negara wilayah iii,Makassar,08245476583,bella.susanto@bela-negara.go.id,2025-03-15,HADIR,56,88
+P0083,Dedi Wulandari,P,27/01/1996,UK03,Balai diklat Wilayah 2,Surabaya,08483762487,dedi.wulandari@bela-negara.go.id,2025-09-10,Hadir,52,87
+P0011,Gunawan Wulandari,Perempuan,28/04/1994,UK03,Balai diklat Wilayah 2,Surabaya,+628802642635,gunawan.wulandari@bela-negara.go.id,2025-02-25,Hadir,66,97
+P0086,Lukman Purnomo,Laki-laki,1983-05-15,UK04,kanwil sumatera,Medan,08165868949,lukman.purnomo@bela-negara.go.id,27/03/2025,hadir,60,72
+P0070,Fitri Maharani,P,1993-06-22,UK08,Pusat Data dan Informasi,Jakarta,08885780297,fitri.maharani@bela-negara.go.id,10/04/2025,,52,75
+P0016,  ENDAH WIJAYA  ,Perempuan,1980-06-25,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,08433710895,endah.wijaya@bela-negara.go.id,2025-01-04,HADIR,49,
+P0067,Oki Handayani,l,13 Mei 1991,UK03,Balai diklat Wilayah 2,Surabaya,08961878547,,18/02/2025,Hadir,56,65
+P0096,Zainal Hidayat,L,11-02-1999,UK05,kantor wilayah bela negara kalimantan,Balikpapan,08929796605,zainal.hidayat@bela-negara.go.id,2025-08-09,,47,68
+P0022,Rian Ramadhan,p,17-05-1982,UK03,balai diklat bela negara wilayah ii,Surabaya,08406207974,,2025-04-16,Tidak Hadir,66,78
+P0097,Oki Rahayu,L,1998-11-25,UK06,Setjen,Jakarta,08917802999,oki.rahayu@bela-negara.go.id,2025-02-06,Tidak Hadir,60,
+P0032,Citra Setiawan,Perempuan,23 November 1995,UK04,Kantor Wil. Bela Negara Sumatera,Medan,08122561176,citra.setiawan@bela-negara.go.id,16/06/2025,Tidak Hadir,75,85
+P0047,Joko Susanto,Perempuan,1992-08-04,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,08555963914,joko.susanto@bela-negara.go.id,2025-07-09,hadir,43,74
+P0007,Rian Santoso,Laki-laki,18/03/1991,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,08721326765,rian.santoso@bela-negara.go.id,2025-05-08,Hadir,45,50
+P0133,Gita Nugroho,L,1984-11-10,UK07,Balai Diklat Bela Negara Wilayah III,Makassar,08452565985,gita.nugroho@bela-negara.go.id,02/03/2025,HADIR,59,73
+P0065,vina permata,L,26-05-2000,UK08,Pusdatin,Jakarta,+628559511700,,27/06/2025,Hadir,45,77
+P0077,  KARTIKA RAHAYU  ,Laki-laki,1994-07-11,UK07,Balai Diklat Wilayah 3,Makassar,08737163058,kartika.rahayu@bela-negara.go.id,03/07/2025,hadir,51,85
+P0084,Vina Hidayat,L,06-03-1998,UK03,balai diklat bela negara wilayah ii,Surabaya,,,2025-05-21,,66,67
+P0024,Gita Wulandari,P,27-04-1988,UK08,Pusdatin,Jakarta,08769130188,,08/05/2025,Hadir,60,94
+P0131,Wahyu Anggraini,l,15/07/1993,UK05,kantor wilayah bela negara kalimantan,Balikpapan,08217758714,wahyu.anggraini@bela-negara.go.id,15/06/2025,Hadir,40,45
+P0093,Putri Permata,l,22 Oktober 1983,UK05,Kanwil Kalimantan ,Balikpapan,08606790398,putri.permata@bela-negara.go.id,2025-05-23,Hadir,68,84
+P0118,Hesti Ramadhan,P,1 Mei 1984,UK08,Pusat Data dan Informasi,Jakarta,08897373495,hesti.ramadhan@bela-negara.go.id,10/03/2025,hadir,52,82
+P0075,Lukman Rahayu,Laki-laki,22/12/1987,UK02,Balai Diklat Wil. I,Bandung,+628523238241,lukman.rahayu@bela-negara.go.id,27/03/2025,HADIR,70,90
+P0113,Endah Santoso,L,09/08/1998,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,08975703878,,2025-06-01,hadir,49,74
+P0038,  UMAR RAHAYU  ,P,1998-01-25,UK01,Dit. Bina Potensi Bela Negara,Jakarta,08938419378,umar.rahayu@bela-negara.go.id,03/08/2025,Hadir,66,87
+P0040,Gunawan Purnomo,Perempuan,1986-05-18,UK08,Pusat Data dan Informasi,Jakarta,08669132114,gunawan.purnomo@bela-negara.go.id,2025-04-23,Hadir,75,75
+P0132,Oki Firmansyah,l,16-04-1993,UK07,Balai Diklat Bela Negara Wilayah III,Makassar,08466666591,oki.firmansyah@bela-negara.go.id,2025-06-22,Hadir,46,
+P0081,Yuni Handayani,p,03-12-1991,UK06,SEKRETARIAT JENDERAL,Jakarta,08303920762,yuni.handayani@bela-negara.go.id,2025-04-26,Hadir,71,71
+P0111,Ahmad Saputra,Laki-laki,22 Desember 1996,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,08322795437,ahmad.saputra@bela-negara.go.id,09/09/2025,Hadir,65,70
+P0122,Sari Setiadi,P,1992-08-25,UK08,Pusdatin,Jakarta,08139099554,sari.setiadi@bela-negara.go.id,2025-02-27,Hadir,59,80
+P0139,Indra Pratama,l,13/06/1997,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,+628655003671,indra.pratama@bela-negara.go.id,2025-08-20,Hadir,51,
+P0116,Citra Saputra,Perempuan,1983-03-03,UK06,Setjen,Jakarta,,citra.saputra@bela-negara.go.id,20/02/2025,,64,64
+P0072,  FARHAN PURNOMO  ,Perempuan,1 Juni 1994,UK02,balai diklat bela negara wilayah 1,Bandung,08747274032,farhan.purnomo@bela-negara.go.id,2025-01-11,,61,70
+P0110,Rian Wijaya,L,1993-03-27,UK01,Direktorat Bina Potensi Bela Negara,Jakarta,08291153368,,22/08/2025,Hadir,40,74
+P0007,Rian Santoso,Laki-laki,18/03/1991,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,08721326765,rian.santoso@bela-negara.go.id,2025-05-08,Hadir,45,50
+P0063,ahmad permata,l,14/02/1991,UK08,PUSAT DATA DAN INFORMASI,Jakarta,08857718433,ahmad.permata@bela-negara.go.id,08/06/2025,,50,54
+P0145,Rian Susanto,Laki-laki,1982-10-04,UK08,PUSAT DATA DAN INFORMASI,Jakarta,08602255447,rian.susanto@bela-negara.go.id,08/03/2025,Hadir,60,85
+P0056,Umar Setiadi,Laki-laki,15 Mei 1996,UK07,balai diklat bela negara wilayah iii,Makassar,08992919549,umar.setiadi@bela-negara.go.id,14/04/2025,Hadir,66,87
+P0021,Wahyu Susanto,p,14 April 1984,UK05,kantor wilayah bela negara kalimantan,Balikpapan,08326049101,wahyu.susanto@bela-negara.go.id,14/04/2025,Tidak Hadir,68,96
+P0018,Ahmad Nugroho,Laki-laki,06/05/1987,UK07,balai diklat bela negara wilayah iii,Makassar,08148896868,ahmad.nugroho@bela-negara.go.id,2025-05-27,Hadir,41,53
+P0108,Sari Firmansyah,Laki-laki,16-12-1983,UK08,Pusdatin,Jakarta,08576249960,sari.firmansyah@bela-negara.go.id,01/03/2025,hadir,66,84
+P0039,Dewi Nugroho,p,27/07/2001,UK08,Pusdatin,Jakarta,08505234550,dewi.nugroho@bela-negara.go.id,2025-09-27,HADIR,74,88
+P0112,Maya Handayani,p,21/02/2001,UK04,kanwil sumatera,Medan,08587327855,,03/03/2025,,67,88
+P0013,endah purnomo,l,1982-10-03,UK02,balai diklat bela negara wilayah 1,Bandung,,endah.purnomo@bela-negara.go.id,11/09/2025,Hadir,60,75
+P0114,Joko Nugroho,l,1997-06-13,UK07,balai diklat bela negara wilayah iii,Makassar,08982315798,,2025-07-08,Hadir,65,
+P0051,Umar Setiawan,p,14/11/1989,UK08,PUSAT DATA DAN INFORMASI,Jakarta,08146106390,umar.setiawan@bela-negara.go.id,05/09/2025,Tidak Hadir,63,97
+P0085,vina wulandari,Laki-laki,10 Juli 2001,UK08,Pusat Data dan Informasi,Jakarta,08173652149,vina.wulandari@bela-negara.go.id,11/03/2025,HADIR,62,87
+P0109,Kartika Setiawan,P,11-11-2000,UK08,PUSAT DATA DAN INFORMASI,Jakarta,08729230828,kartika.setiawan@bela-negara.go.id,24/03/2025,Hadir,74,94
+P0048,Farhan Hidayat,P,20-04-2000,UK06,Sekretariat Jenderal,Jakarta,08943294774,farhan.hidayat@bela-negara.go.id,26/05/2025,Hadir,63,71
+P0010,Zainal Setiadi,P,4 Februari 1986,UK08,Pusdatin,Jakarta,08628835373,zainal.setiadi@bela-negara.go.id,02/02/2025,HADIR,61,67
+P0047,Joko Susanto,Perempuan,1992-08-04,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,08555963914,joko.susanto@bela-negara.go.id,2025-07-09,hadir,43,74
+P0120,Joko Pratama,Perempuan,08-05-2000,UK08,Pusat Data dan Informasi,Jakarta,+628647324856,joko.pratama@bela-negara.go.id,18/07/2025,hadir,42,65
+P0144,Sari Firmansyah,p,13-11-1980,UK01,Dit. Bina Potensi Bela Negara,Jakarta,08774995789,sari.firmansyah@bela-negara.go.id,23/03/2025,Hadir,42,56
+P0142,gita susanto,P,27/05/1990,UK07,balai diklat bela negara wilayah iii,Makassar,08259422849,gita.susanto@bela-negara.go.id,02/09/2025,Hadir,69,87
+P0105,Indra Wijaya,l,,UK03,balai diklat bela negara wilayah ii,Surabaya,08547394713,indra.wijaya@bela-negara.go.id,10/03/2025,Hadir,74,89
+P0134,  CITRA SANTOSO  ,Perempuan,,UK02,balai diklat bela negara wilayah 1,Bandung,08996764217,citra.santoso@bela-negara.go.id,2025-03-16,Hadir,64,69
+P0076,Eko Pratama,Perempuan,1986-01-26,UK01,Dit. Bina Potensi Bela Negara,Jakarta,08506202210,eko.pratama@bela-negara.go.id,2025-05-02,Hadir,62,65
+P0019,Indra Pratama,Laki-laki,22-07-1996,UK06,SEKRETARIAT JENDERAL,Jakarta,08245382463,indra.pratama@bela-negara.go.id,20/02/2025,Hadir,60,87
+P0008,Dedi Pratama,l,2001-08-18,UK03,Balai Diklat Bela Negara Wilayah II,Surabaya,08878099076,dedi.pratama@bela-negara.go.id,23/04/2025,Tidak Hadir,63,91
+P0125,Sari Nugroho,P,28 November 1988,UK08,Pusat Data dan Informasi,Jakarta,08916258048,sari.nugroho@bela-negara.go.id,12/06/2025,hadir,51,70
+P0042,endah pratama,Perempuan,10-01-1988,UK06,SEKRETARIAT JENDERAL,Jakarta,08849214801,endah.pratama@bela-negara.go.id,18/06/2025,Tidak Hadir,60,72
+P0103,Zainal Wulandari,Perempuan,05-06-1994,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,08241540516,zainal.wulandari@bela-negara.go.id,2025-01-08,Hadir,46,48
+P0023,Maya Ramadhan,P,6 April 1993,UK01,Direktorat Bina Potensi Bela Negara,Jakarta,08413036059,maya.ramadhan@bela-negara.go.id,20/09/2025,,68,100
+P0057,Maya Susanto,Laki-laki,2001-05-12,UK07,Balai Diklat Wilayah 3,Makassar,+628702126310,maya.susanto@bela-negara.go.id,2025-06-26,hadir,43,78
+P0044,Oki Saputra,Perempuan,11 Mei 1995,UK03,Balai Diklat Bela Negara Wilayah II,Surabaya,08529952696,oki.saputra@bela-negara.go.id,2025-08-28,hadir,44,59
+P0017,Lukman Setiadi,Perempuan,26/06/1989,UK03,Balai Diklat Bela Negara Wilayah II,Surabaya,08365186414,lukman.setiadi@bela-negara.go.id,2025-07-20,Hadir,50,61
+P0104,wahyu wijaya,L,07/09/1987,UK07,Balai Diklat Wilayah 3,Makassar,08474928578,wahyu.wijaya@bela-negara.go.id,08/06/2025,Hadir,73,80
+P0149,oki wijaya,l,1 Agustus 1992,UK07,balai diklat bela negara wilayah iii,Makassar,08326938182,oki.wijaya@bela-negara.go.id,2025-03-02,HADIR,58,89
+P0079,Zainal Nugroho,P,08-02-1984,UK08,Pusat Data dan Informasi,Jakarta,08821543335,zainal.nugroho@bela-negara.go.id,2025-06-15,hadir,48,81
+P0043,Hesti Setiadi,Perempuan,26 Desember 1995,UK01,Dit. Bina Potensi Bela Negara,Jakarta,,hesti.setiadi@bela-negara.go.id,2025-06-28,,68,74
+P0001,  VINA SANTOSO  ,Laki-laki,04/12/1984,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,+628141499914,vina.santoso@bela-negara.go.id,07/09/2025,Hadir,68,85
+P0147,Bella Hidayat,p,1990-03-03,UK01,direktorat bina potensi bela negara,Jakarta,+628609614423,bella.hidayat@bela-negara.go.id,01/03/2025,,68,83
+P0068,Tono Lestari,Laki-laki,03-12-1999,UK07,Balai Diklat Bela Negara Wilayah III,Makassar,08926510922,tono.lestari@bela-negara.go.id,03/09/2025,hadir,63,64
+P0003,Umar Firmansyah,p,25-04-2001,UK02,Balai Diklat Bela Negara Wilayah I,Bandung,08392694522,umar.firmansyah@bela-negara.go.id,12/03/2025,Hadir,57,61
+P0029,Zainal Santoso,P,10 Januari 1998,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,08352275009,zainal.santoso@bela-negara.go.id,2025-05-28,,42,64
+P0078,Dewi Pratama,Laki-laki,1999-12-14,UK05,Kanwil Kalimantan ,Balikpapan,+628548501590,dewi.pratama@bela-negara.go.id,2025-07-09,Hadir,65,88
+P0030,  WAHYU FIRMANSYAH  ,p,4 Agustus 1993,UK06,Sekretariat Jenderal,Jakarta,08918713146,wahyu.firmansyah@bela-negara.go.id,20/05/2025,Tidak Hadir,67,84
+P0135,Dewi Santoso,Laki-laki,1984-11-22,UK03,Balai diklat Wilayah 2,Surabaya,08821142182,dewi.santoso@bela-negara.go.id,2025-04-21,Tidak Hadir,68,81
+P0012,Endah Anggraini,P,26 Mei 1992,UK07,Balai Diklat Bela Negara Wilayah III,Makassar,08999164991,endah.anggraini@bela-negara.go.id,02/09/2025,Hadir,43,73
+P0005,  VINA HANDAYANI  ,P,9 September 1997,UK04,Kantor Wil. Bela Negara Sumatera,Medan,08617073292,vina.handayani@bela-negara.go.id,2025-02-25,,47,56
+P0126,Tono Pratama,Laki-laki,06-02-1989,UK02,balai diklat bela negara wilayah 1,Bandung,08757517332,tono.pratama@bela-negara.go.id,2025-03-16,hadir,50,81
+P0140,eko saputra,Laki-laki,24-03-1991,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,08251492516,eko.saputra@bela-negara.go.id,2025-05-23,Tidak Hadir,69,92
+P0080,kartika rahayu,L,13/09/1995,UK01,direktorat bina potensi bela negara,Jakarta,08438487220,kartika.rahayu@bela-negara.go.id,2025-08-07,Hadir,44,72
+P0127,Fitri Permata,l,1980-08-05,UK01,Dit. Bina Potensi Bela Negara,Jakarta,08819479842,fitri.permata@bela-negara.go.id,2025-08-16,Hadir,41,55
+P0049,Joko Permata,P,17-06-1997,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,08429084065,joko.permata@bela-negara.go.id,2025-02-15,Hadir,54,79
+P0037,Hesti Lestari,P,20-05-1985,UK02,Balai Diklat Bela Negara Wilayah I,Bandung,08696101803,hesti.lestari@bela-negara.go.id,2025-08-15,hadir,42,69
+P0141,endah setiadi,P,24/11/1998,UK05,Kantor Wilayah Bela Negara Kalimantan,Balikpapan,+628751043092,endah.setiadi@bela-negara.go.id,12/08/2025,Hadir,51,53
+P0008,Dedi Pratama,l,2001-08-18,UK03,Balai Diklat Bela Negara Wilayah II,Surabaya,08878099076,dedi.pratama@bela-negara.go.id,23/04/2025,Tidak Hadir,63,91
+P0082,Tono Firmansyah,l,10 Februari 1982,UK03,balai diklat bela negara wilayah ii,Surabaya,08719819709,tono.firmansyah@bela-negara.go.id,2025-03-11,Tidak Hadir,69,91
+P0082,Tono Firmansyah,l,10 Februari 1982,UK03,balai diklat bela negara wilayah ii,Surabaya,08719819709,tono.firmansyah@bela-negara.go.id,2025-03-11,Tidak Hadir,69,91
+P0061,Dewi Firmansyah,Laki-laki,2001-05-02,UK08,PUSAT DATA DAN INFORMASI,Jakarta,+628861919088,dewi.firmansyah@bela-negara.go.id,25/03/2025,Hadir,60,
+P0046,tono nugroho,L,2001-04-16,UK07,balai diklat bela negara wilayah iii,Makassar,08915261032,tono.nugroho@bela-negara.go.id,2025-08-10,Hadir,68,90
+P0045,Gita Hidayat,p,23/11/1983,UK02,BALAI DIKLAT BELA NEGARA WILAYAH I ,Bandung,,gita.hidayat@bela-negara.go.id,12/05/2025,Tidak Hadir,49,64
+P0091,Fitri Purnomo,l,02/04/2001,UK07,Balai Diklat Bela Negara Wilayah III,Makassar,08666262886,fitri.purnomo@bela-negara.go.id,25/09/2025,,43,51
+P0100,Dewi Wijaya,l,06-03-1997,UK04,Kantor Wil. Bela Negara Sumatera,Medan,08662950183,dewi.wijaya@bela-negara.go.id,2025-09-15,Tidak Hadir,48,80
+P0057,Maya Susanto,Laki-laki,2001-05-12,UK07,Balai Diklat Wilayah 3,Makassar,+628702126310,maya.susanto@bela-negara.go.id,2025-06-26,hadir,43,78
+P0072,  FARHAN PURNOMO  ,Perempuan,1 Juni 1994,UK02,balai diklat bela negara wilayah 1,Bandung,08747274032,farhan.purnomo@bela-negara.go.id,2025-01-11,,61,70
+P0137,Rian Kusuma,Laki-laki,1995-07-04,UK01,direktorat bina potensi bela negara,Jakarta,08862191383,rian.kusuma@bela-negara.go.id,05/06/2025,,66,89
+P0069,Fitri Kusuma,Perempuan,03-03-1984,UK04,Kantor Wilayah Bela Negara Sumatera,Medan,08229517619,fitri.kusuma@bela-negara.go.id,22/01/2025,,48,72
+P0062,zainal susanto,Perempuan,26-11-1997,UK04,Kantor Wil. Bela Negara Sumatera,Medan,+628158318550,zainal.susanto@bela-negara.go.id,19/07/2025,HADIR,66,84
+P0064,Dewi Purnomo,Laki-laki,08/03/2000,UK06,SEKRETARIAT JENDERAL,Jakarta,08353910830,dewi.purnomo@bela-negara.go.id,25/03/2025,Tidak Hadir,68,88
+P0026,Maya Susanto,p,,UK04,kanwil sumatera,Medan,08537783308,maya.susanto@bela-negara.go.id,01/09/2025,hadir,41,46
+P0041,Citra Setiawan,L,16-03-2000,UK08,Pusat Data dan Informasi,Jakarta,08447970771,citra.setiawan@bela-negara.go.id,05/09/2025,Hadir,72,95
+P0060,oki permata,Laki-laki,1999-02-02,UK06,SEKRETARIAT JENDERAL,Jakarta,08891834876,oki.permata@bela-negara.go.id,20/08/2025,Tidak Hadir,57,70
+P0150,  SARI RAMADHAN  ,Laki-laki,1993-04-21,UK07,Balai Diklat Bela Negara Wilayah III,Makassar,08791327658,sari.ramadhan@bela-negara.go.id,26/09/2025,Hadir,72,82
+P0092,Sari Permata,Perempuan,18-08-1985,UK07,Balai Diklat Wilayah 3,Makassar,08965435261,sari.permata@bela-negara.go.id,2025-09-10,Hadir,58,71
+P0136,Dewi Lestari,l,1993-06-26,UK07,Balai Diklat Wilayah 3,Makassar,08922413458,dewi.lestari@bela-negara.go.id,2025-05-25,,59,72
+P0121,Bella Wulandari,L,2001-11-12,UK02,balai diklat bela negara wilayah 1,Bandung,08157704473,bella.wulandari@bela-negara.go.id,2025-02-01,Hadir,54,86
+P0015,  BELLA PURNOMO  ,l,09/03/1983,UK05,kantor wilayah bela negara kalimantan,Balikpapan,08803607983,bella.purnomo@bela-negara.go.id,22/04/2025,hadir,71,79
