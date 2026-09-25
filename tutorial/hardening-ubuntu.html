@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hardening Ubuntu Lengkap</title>
+<meta name="description" content="Tutorial lengkap hardening Ubuntu 22.04/24.04 LTS: update, SSH, firewall, fail2ban, kernel, AppArmor, audit, integritas file, dan verifikasi.">
+<style>
+:root{
+  --bg:#f7f7f5; --surface:#ffffff; --surface-2:#f0efeb; --text:#1d1d1b; --muted:#5f5e5a;
+  --border:#dddcd6; --accent:#c2410c; --accent-soft:#fdeee6; --code-bg:#1e1f22; --code-text:#e6e6e3;
+  --ok:#15803d; --ok-soft:#e7f5ec; --warn:#a16207; --warn-soft:#fdf6e3; --danger:#b91c1c; --danger-soft:#fdecec;
+  --info:#1d4ed8; --info-soft:#e8effd;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141412; --surface:#1c1c1a; --surface-2:#252523; --text:#ecebe6; --muted:#a8a7a0;
+    --border:#34342f; --accent:#fb923c; --accent-soft:#3a2416; --code-bg:#0d0d0c; --code-text:#e6e6e3;
+    --ok:#4ade80; --ok-soft:#15291d; --warn:#facc15; --warn-soft:#2e2812; --danger:#f87171; --danger-soft:#331818;
+    --info:#93b4ff; --info-soft:#18223a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141412; --surface:#1c1c1a; --surface-2:#252523; --text:#ecebe6; --muted:#a8a7a0;
+  --border:#34342f; --accent:#fb923c; --accent-soft:#3a2416; --code-bg:#0d0d0c; --code-text:#e6e6e3;
+  --ok:#4ade80; --ok-soft:#15291d; --warn:#facc15; --warn-soft:#2e2812; --danger:#f87171; --danger-soft:#331818;
+  --info:#93b4ff; --info-soft:#18223a;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+code,pre,kbd{font-family:ui-monospace,"JetBrains Mono","Ubuntu Mono",Menlo,Consolas,monospace}
+:not(pre)>code{background:var(--surface-2);border:1px solid var(--border);border-radius:5px;padding:.05em .35em;font-size:.88em;overflow-wrap:anywhere}
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr);max-width:1240px;margin:0 auto}
+aside{position:sticky;top:0;height:100vh;overflow-y:auto;padding:24px 16px 24px 20px;border-right:1px solid var(--border)}
+aside .brand{font-weight:800;font-size:1.05rem;margin:0 0 4px}
+aside .sub{color:var(--muted);font-size:.82rem;margin:0 0 16px}
+.progress{background:var(--surface-2);border-radius:99px;height:8px;overflow:hidden;margin:6px 0 4px}
+.progress>span{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.progress-label{font-size:.8rem;color:var(--muted)}
+nav.toc ol{list-style:none;margin:16px 0 0;padding:0;counter-reset:t}
+nav.toc li{margin:0}
+nav.toc a{display:flex;gap:8px;align-items:baseline;padding:5px 8px;border-radius:6px;color:var(--text);text-decoration:none;font-size:.88rem}
+nav.toc a:hover{background:var(--surface-2)}
+nav.toc a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+nav.toc a .n{color:var(--muted);font-variant-numeric:tabular-nums;min-width:1.4em}
+nav.toc a.done .n::after{content:" ✓";color:var(--ok)}
+.tools{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 10px;font-size:.8rem}
+.btn:hover{border-color:var(--accent)}
+main{padding:32px 40px 80px;min-width:0}
+header.hero{border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:8px}
+header.hero h1{font-size:2rem;line-height:1.2;margin:0 0 8px}
+header.hero p{color:var(--muted);margin:0;max-width:70ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tag{font-size:.75rem;border:1px solid var(--border);background:var(--surface);border-radius:99px;padding:2px 10px;color:var(--muted)}
+section{padding-top:28px;max-width:78ch}
+section>h2{font-size:1.45rem;margin:0 0 6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+section>h2 .num{background:var(--accent);color:#fff;border-radius:7px;font-size:.85rem;padding:1px 8px;font-variant-numeric:tabular-nums}
+h3{font-size:1.08rem;margin:22px 0 6px}
+p,li{max-width:75ch}
+.why{color:var(--muted);margin-top:0}
+pre{position:relative;background:var(--code-bg);color:var(--code-text);border-radius:9px;padding:14px 16px;overflow-x:auto;font-size:.84rem;line-height:1.55;margin:10px 0 14px}
+pre .file{display:block;color:#9f9e97;font-size:.75rem;margin:-4px 0 8px;border-bottom:1px solid #33332f;padding-bottom:6px}
+pre .c{color:#8a8a82}
+.copy{position:absolute;top:8px;right:8px;background:#2d2e31;color:#d6d6d2;border:1px solid #45464a;border-radius:6px;font-size:.72rem;padding:3px 8px;opacity:.85}
+.copy:hover{opacity:1}
+.callout{border-left:4px solid;border-radius:0 8px 8px 0;padding:10px 14px;margin:14px 0;font-size:.93rem}
+.callout p{margin:.3em 0}
+.callout strong:first-child{display:block;margin-bottom:2px}
+.danger{border-color:var(--danger);background:var(--danger-soft)}
+.warn{border-color:var(--warn);background:var(--warn-soft)}
+.info{border-color:var(--info);background:var(--info-soft)}
+.ok{border-color:var(--ok);background:var(--ok-soft)}
+table{border-collapse:collapse;width:100%;font-size:.88rem;margin:10px 0 16px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--border);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--surface-2)}
+.done-box{display:flex;align-items:center;gap:10px;margin-top:18px;padding:10px 14px;background:var(--surface);border:1px dashed var(--border);border-radius:9px;font-size:.9rem;cursor:pointer;user-select:none}
+.done-box input{width:18px;height:18px;accent-color:var(--ok)}
+.done-box.checked{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.pri{font-size:.7rem;font-weight:700;border-radius:5px;padding:2px 7px;letter-spacing:.02em}
+.p1{background:var(--danger-soft);color:var(--danger)}
+.p2{background:var(--warn-soft);color:var(--warn)}
+.p3{background:var(--info-soft);color:var(--info)}
+.menu-toggle{display:none}
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;max-width:78ch}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr}
+  aside{position:fixed;inset:0 25% 0 0;max-width:320px;z-index:20;background:var(--bg);transform:translateX(-105%);transition:transform .25s;box-shadow:0 0 40px rgba(0,0,0,.25)}
+  aside.open{transform:none}
+  .menu-toggle{display:inline-flex;position:fixed;right:16px;bottom:16px;z-index:30;background:var(--accent);color:#fff;border:0;border-radius:99px;padding:10px 16px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  main{padding:20px 16px 80px}
+  header.hero h1{font-size:1.55rem}
+}
+@media print{
+  aside,.menu-toggle,.copy,.tools{display:none!important}
+  .layout{display:block}
+  pre{white-space:pre-wrap;background:#f3f3f3;color:#111}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside id="sidebar">
+  <p class="brand">🛡️ Hardening Ubuntu</p>
+  <p class="sub">Ubuntu 22.04 / 24.04 LTS · server &amp; desktop</p>
+  <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+  <div class="progress-label" id="plabel">0 dari 0 langkah selesai</div>
+  <nav class="toc" id="toc"><ol></ol></nav>
+  <div class="tools">
+    <button class="btn" id="theme">Ganti tema</button>
+    <button class="btn" id="reset">Reset progres</button>
+    <button class="btn" onclick="window.print()">Cetak</button>
+  </div>
+</aside>
+
+<main>
+<header class="hero">
+  <h1>Tutorial Lengkap Hardening Ubuntu</h1>
+  <p>Panduan langkah demi langkah untuk mengamankan Ubuntu, mulai dari patch dan SSH sampai audit kernel dan integritas file. Setiap langkah punya alasan, perintah, cara verifikasi, dan cara membatalkannya kalau ada yang rusak.</p>
+  <div class="meta">
+    <span class="tag">Ubuntu 22.04 LTS</span><span class="tag">Ubuntu 24.04 LTS</span>
+    <span class="tag"><span class="pri p1">P1</span> wajib</span>
+    <span class="tag"><span class="pri p2">P2</span> sangat disarankan</span>
+    <span class="tag"><span class="pri p3">P3</span> sesuai kebutuhan</span>
+  </div>
+</header>
+
+<!-- 0 -->
+<section id="s-mulai" data-title="Sebelum mulai">
+  <h2><span class="num">00</span> Sebelum mulai: baca ini dulu</h2>
+  <div class="callout danger">
+    <strong>Hardening yang salah lebih berbahaya daripada tidak di-hardening.</strong>
+    <p>Penyebab paling umum orang terkunci dari server sendiri adalah SSH, firewall, dan PAM. Jangan jalankan semua perintah di halaman ini sekaligus, dan jangan pernah langsung mencobanya di server produksi.</p>
+  </div>
+  <h3>Aturan keselamatan</h3>
+  <ol>
+    <li><strong>Punya akses darurat.</strong> Pastikan ada konsol KVM/VNC dari penyedia VPS, akses fisik, atau serial console. Tanpa itu, satu salah ketik di SSH bisa berarti instal ulang.</li>
+    <li><strong>Snapshot atau backup dulu.</strong> Ambil snapshot VM atau backup <code>/etc</code> minimal:
+<pre><code>sudo tar czf /root/etc-backup-$(date +%F).tar.gz /etc</code></pre></li>
+    <li><strong>Biarkan satu sesi SSH tetap terbuka</strong> saat mengubah SSH, firewall, atau PAM. Uji dari sesi <em>kedua</em>. Tutup sesi pertama hanya setelah sesi kedua berhasil login.</li>
+    <li><strong>Satu perubahan, satu verifikasi.</strong> Ikuti urutan bagian di halaman ini, karena urutannya disusun supaya kamu tidak mengunci diri sendiri.</li>
+    <li><strong>Uji di VM dulu</strong>, misalnya dengan Multipass (<code>multipass launch 24.04</code>) atau VirtualBox.</li>
+  </ol>
+  <h3>Cek versi dan kondisi awal</h3>
+<pre><code>lsb_release -a            <span class="c"># versi Ubuntu</span>
+uname -r                  <span class="c"># versi kernel</span>
+who; last -n 10           <span class="c"># siapa yang sedang/terakhir login</span>
+sudo ss -tulpn            <span class="c"># port yang sedang terbuka</span>
+systemctl --failed        <span class="c"># service yang gagal</span></code></pre>
+  <h3>Apa yang sebenarnya paling penting?</h3>
+  <p class="why">Tidak semua langkah punya dampak yang sama. Untuk server yang terhubung ke internet, sebagian besar insiden berasal dari tiga hal: software yang tidak di-patch, SSH berbasis password, dan service yang terbuka padahal tidak perlu. Kerjakan bagian <span class="pri p1">P1</span> dulu sampai tuntas sebelum menyentuh yang lain.</p>
+  <table>
+    <tr><th>Prioritas</th><th>Bagian</th><th>Risiko yang ditutup</th></tr>
+    <tr><td><span class="pri p1">P1</span></td><td>Update, user &amp; sudo, SSH, firewall, minimalkan service</td><td>Eksploitasi CVE lama, brute-force, service terbuka</td></tr>
+    <tr><td><span class="pri p2">P2</span></td><td>Fail2ban, kernel sysctl, AppArmor, audit/log, filesystem, backup</td><td>Eskalasi hak akses, jejak serangan hilang, pemulihan</td></tr>
+    <tr><td><span class="pri p3">P3</span></td><td>AIDE, rkhunter, modul kernel, GRUB, PAM faillock, USG/CIS</td><td>Persistensi penyerang, serangan fisik, kepatuhan</td></tr>
+  </table>
+</section>
+
+<!-- 1 -->
+<section id="s-update" data-title="Update &amp; patch otomatis">
+  <h2><span class="num">01</span> Update sistem &amp; patch otomatis <span class="pri p1">P1</span></h2>
+  <p class="why">Sebagian besar sistem yang dibobol menjalankan software dengan celah yang patch-nya sudah tersedia. Ini langkah dengan nilai tertinggi di seluruh tutorial ini.</p>
+<pre><code>sudo apt update
+sudo apt full-upgrade -y
+sudo apt autoremove --purge -y
+<span class="c"># Reboot jika kernel/libc diperbarui</span>
+[ -f /var/run/reboot-required ] &amp;&amp; echo "Perlu reboot" &amp;&amp; cat /var/run/reboot-required.pkgs</code></pre>
+  <h3>Aktifkan unattended-upgrades</h3>
+<pre><code>sudo apt install -y unattended-upgrades apt-listchanges
+sudo dpkg-reconfigure -plow unattended-upgrades   <span class="c"># pilih "Yes"</span></code></pre>
+  <p>Atur agar paket yang tidak terpakai ikut dibersihkan dan (opsional) reboot otomatis di jam sepi:</p>
+<pre><code><span class="file">/etc/apt/apt.conf.d/52unattended-upgrades-local</span>Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-Time "03:30";</code></pre>
+  <div class="callout info"><strong>Kenapa file terpisah?</strong><p>File <code>50unattended-upgrades</code> bawaan bisa ditimpa saat paket di-upgrade. File dengan nomor lebih besar dibaca belakangan, jadi nilainya menang, dan pengaturanmu tetap aman.</p></div>
+<pre><code><span class="c"># Verifikasi</span>
+systemctl status unattended-upgrades --no-pager
+sudo unattended-upgrade --dry-run --debug 2&gt;&amp;1 | tail -20
+cat /etc/apt/apt.conf.d/20auto-upgrades   <span class="c"># harus berisi "1" untuk kedua baris</span></code></pre>
+  <h3>Opsional: Ubuntu Pro &amp; Livepatch</h3>
+  <p>Ubuntu Pro gratis untuk pemakaian pribadi (hingga 5 mesin). Isinya patch keamanan untuk paket <code>universe</code> (ESM) dan Livepatch, yaitu patch kernel tanpa reboot.</p>
+<pre><code>sudo pro attach &lt;TOKEN_DARI_ubuntu.com/pro&gt;
+sudo pro enable livepatch
+pro status</code></pre>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 2 -->
+<section id="s-user" data-title="User, sudo &amp; password">
+  <h2><span class="num">02</span> User, sudo &amp; kebijakan password <span class="pri p1">P1</span></h2>
+  <p class="why">Login sebagai root membuat setiap kesalahan dan setiap kompromi berdampak penuh. Gunakan user biasa dan <code>sudo</code>, supaya setiap aksi berhak tinggi tercatat dan disengaja.</p>
+  <h3>Buat user admin (jika masih memakai root)</h3>
+<pre><code>sudo adduser adminku
+sudo usermod -aG sudo adminku
+<span class="c"># Uji dari sesi baru sebelum melanjutkan:</span>
+su - adminku -c 'sudo -v &amp;&amp; echo SUDO OK'</code></pre>
+  <h3>Kunci akun root</h3>
+  <p>Di instalasi standar Ubuntu, root sudah terkunci. Cek dulu:</p>
+<pre><code>sudo passwd -S root   <span class="c"># "L" = locked, "P" = punya password</span>
+sudo passwd -l root   <span class="c"># kunci jika statusnya "P"</span></code></pre>
+  <h3>Audit akun</h3>
+<pre><code><span class="c"># Akun selain root dengan UID 0 (seharusnya kosong)</span>
+awk -F: '$3==0 &amp;&amp; $1!="root"{print}' /etc/passwd
+<span class="c"># Akun dengan password kosong (seharusnya kosong)</span>
+sudo awk -F: '$2==""{print $1}' /etc/shadow
+<span class="c"># Anggota grup sudo/admin</span>
+getent group sudo admin
+<span class="c"># User manusia (UID &gt;= 1000) yang bisa login</span>
+awk -F: '$3&gt;=1000 &amp;&amp; $7!~/(nologin|false)/{print $1, $7}' /etc/passwd</code></pre>
+  <p>Kunci atau hapus akun yang tidak dikenal: <code>sudo usermod -L -e 1 namauser</code> atau <code>sudo deluser --remove-home namauser</code>.</p>
+  <h3>Kebijakan kualitas password</h3>
+<pre><code>sudo apt install -y libpam-pwquality</code></pre>
+<pre><code><span class="file">/etc/security/pwquality.conf</span>minlen = 14
+minclass = 3
+maxrepeat = 3
+dictcheck = 1
+usercheck = 1
+retry = 3
+enforce_for_root</code></pre>
+  <h3>Umur password &amp; umask default</h3>
+  <p>Edit <code>/etc/login.defs</code>. Perubahan ini hanya berlaku untuk user <em>baru</em>. Untuk user lama, gunakan <code>chage</code>.</p>
+<pre><code><span class="file">/etc/login.defs (ubah baris yang sudah ada)</span>PASS_MAX_DAYS   365
+PASS_MIN_DAYS   1
+PASS_WARN_AGE   14
+UMASK           027</code></pre>
+<pre><code>sudo chage -l adminku                <span class="c"># lihat kebijakan user</span>
+sudo chage -M 365 -m 1 -W 14 adminku  <span class="c"># terapkan ke user lama</span></code></pre>
+  <div class="callout info"><strong>Catatan soal rotasi password</strong><p>NIST SP 800-63B tidak lagi menyarankan rotasi paksa yang sering. Password panjang ditambah SSH key dan MFA jauh lebih efektif. Batas 365 hari di atas hanyalah jaring pengaman.</p></div>
+  <h3>Perketat sudo</h3>
+  <p>Selalu edit lewat <code>visudo</code>, karena ia memvalidasi sintaks. File sudoers yang rusak bisa menghilangkan akses sudo sama sekali.</p>
+<pre><code>sudo visudo -f /etc/sudoers.d/99-hardening</code></pre>
+<pre><code><span class="file">/etc/sudoers.d/99-hardening</span>Defaults use_pty
+Defaults logfile="/var/log/sudo.log"
+Defaults timestamp_timeout=5
+Defaults passwd_tries=3</code></pre>
+<pre><code>sudo visudo -c   <span class="c"># harus "parsed OK"</span></code></pre>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 3 -->
+<section id="s-ssh" data-title="SSH">
+  <h2><span class="num">03</span> Hardening SSH <span class="pri p1">P1</span></h2>
+  <p class="why">SSH yang terbuka ke internet menerima ribuan percobaan brute-force per hari. Menonaktifkan login password dan login root menutup hampir semua serangan itu.</p>
+  <div class="callout danger"><strong>Urutan wajib</strong><p>1) Pasang SSH key → 2) uji login dengan key → 3) baru matikan password. Kalau urutannya terbalik, kamu terkunci.</p></div>
+  <h3>Langkah 1: buat dan pasang key (di komputer <em>kamu</em>, bukan di server)</h3>
+<pre><code>ssh-keygen -t ed25519 -a 100 -C "laptop-kamu"
+ssh-copy-id -i ~/.ssh/id_ed25519.pub adminku@IP_SERVER
+ssh -i ~/.ssh/id_ed25519 adminku@IP_SERVER   <span class="c"># harus masuk TANPA ditanya password akun</span></code></pre>
+  <h3>Langkah 2: konfigurasi drop-in</h3>
+  <p>Jangan mengedit <code>sshd_config</code> langsung. Buat file di <code>sshd_config.d/</code>.</p>
+  <div class="callout warn"><strong>Jebakan: nama file menentukan siapa yang menang</strong><p>OpenSSH memakai nilai <em>pertama</em> yang ditemukan untuk setiap opsi. Image cloud (AWS, GCP, DigitalOcean, dll.) sering membawa <code>50-cloud-init.conf</code> berisi <code>PasswordAuthentication yes</code>. Kalau file kamu bernama <code>99-…</code>, pengaturanmu <strong>kalah</strong>. Pakai awalan <code>00-</code>.</p></div>
+<pre><code><span class="file">/etc/ssh/sshd_config.d/00-hardening.conf</span>PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitEmptyPasswords no
+PubkeyAuthentication yes
+AuthenticationMethods publickey
+
+MaxAuthTries 3
+MaxSessions 4
+LoginGraceTime 30
+ClientAliveInterval 300
+ClientAliveCountMax 2
+
+X11Forwarding no
+AllowAgentForwarding no
+AllowTcpForwarding no
+PermitTunnel no
+PermitUserEnvironment no
+
+<span class="c"># Hanya user tertentu yang boleh login (ganti sesuai user kamu)</span>
+AllowUsers adminku
+
+Banner /etc/issue.net
+LogLevel VERBOSE</code></pre>
+  <div class="callout info"><strong>Butuh port forwarding?</strong><p>Kalau kamu memakai tunnel SSH (misalnya ke database atau VS Code Remote), ubah <code>AllowTcpForwarding</code> ke <code>local</code> atau <code>yes</code>. VS Code Remote-SSH butuh forwarding.</p></div>
+  <h3>Langkah 3: validasi, lalu terapkan</h3>
+<pre><code>sudo sshd -t                                          <span class="c"># tidak ada output = sintaks OK</span>
+sudo sshd -T | grep -Ei '^(permitrootlogin|passwordauthentication|kbdinteractive|allowusers|x11forwarding)'
+sudo systemctl restart ssh</code></pre>
+  <p><strong>Sekarang, tanpa menutup sesi lama,</strong> buka terminal baru dan uji:</p>
+<pre><code>ssh adminku@IP_SERVER                               <span class="c"># harus berhasil (pakai key)</span>
+ssh -o PubkeyAuthentication=no adminku@IP_SERVER    <span class="c"># harus DITOLAK: "Permission denied (publickey)"</span>
+ssh root@IP_SERVER                                  <span class="c"># harus DITOLAK</span></code></pre>
+  <h3>Opsional: ganti port</h3>
+  <p>Mengganti port <em>bukan</em> pengamanan. Tujuannya hanya mengurangi noise di log. Kalau tetap ingin:</p>
+<pre><code><span class="c"># 1) Buka port baru di firewall DULU</span>
+sudo ufw allow 2222/tcp
+<span class="c"># 2) Tambahkan "Port 2222" ke 00-hardening.conf</span>
+<span class="c"># 3a) Ubuntu 22.04:</span>
+sudo systemctl restart ssh
+<span class="c"># 3b) Ubuntu 24.04 (SSH memakai socket activation):</span>
+sudo systemctl daemon-reload
+sudo systemctl restart ssh.socket
+<span class="c"># 4) Uji port baru, baru hapus aturan port 22</span></code></pre>
+  <h3>Banner peringatan</h3>
+<pre><code>echo "Akses hanya untuk pengguna yang berwenang. Aktivitas dicatat dan dipantau." | sudo tee /etc/issue.net</code></pre>
+  <h3>Opsional lanjutan: 2FA (TOTP) untuk SSH</h3>
+<pre><code>sudo apt install -y libpam-google-authenticator
+google-authenticator   <span class="c"># jalankan sebagai user, scan QR ke aplikasi authenticator</span></code></pre>
+  <p>Tambahkan <code>auth required pam_google_authenticator.so</code> di <code>/etc/pam.d/sshd</code>, lalu di file SSH ganti ke <code>KbdInteractiveAuthentication yes</code> dan <code>AuthenticationMethods publickey,keyboard-interactive</code>. Uji dengan sesi kedua seperti sebelumnya.</p>
+  <div class="callout ok"><strong>Rollback</strong><p><code>sudo rm /etc/ssh/sshd_config.d/00-hardening.conf &amp;&amp; sudo systemctl restart ssh</code> (jalankan lewat sesi yang masih terbuka atau lewat konsol).</p></div>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 4 -->
+<section id="s-ufw" data-title="Firewall (UFW)">
+  <h2><span class="num">04</span> Firewall dengan UFW <span class="pri p1">P1</span></h2>
+  <p class="why">Default-deny untuk koneksi masuk berarti hanya service yang kamu izinkan secara eksplisit yang bisa dijangkau dari luar, termasuk service yang tidak sengaja terpasang.</p>
+  <div class="callout danger"><strong>Izinkan SSH SEBELUM <code>ufw enable</code>.</strong><p>Kalau urutannya terbalik, koneksimu langsung putus.</p></div>
+<pre><code>sudo apt install -y ufw
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw limit OpenSSH          <span class="c"># izinkan SSH + rate-limit (6 koneksi/30 dtk per IP)</span>
+<span class="c"># Contoh service lain, buka HANYA yang kamu butuhkan:</span>
+<span class="c"># sudo ufw allow 80,443/tcp</span>
+<span class="c"># sudo ufw allow from 10.0.0.0/24 to any port 5432 proto tcp   # DB hanya dari LAN</span>
+sudo ufw logging low
+sudo ufw enable
+sudo ufw status verbose numbered</code></pre>
+  <p>Kalau kamu hanya login dari IP tetap, batasi SSH lebih ketat lagi:</p>
+<pre><code>sudo ufw allow from 203.0.113.10 to any port 22 proto tcp
+sudo ufw delete limit OpenSSH</code></pre>
+  <div class="callout warn"><strong>Docker melewati UFW</strong><p>Port yang di-publish Docker (<code>-p 8080:80</code>) menulis aturan iptables sendiri dan <strong>tidak</strong> diblokir UFW. Bind ke localhost (<code>-p 127.0.0.1:8080:80</code>) atau gunakan chain <code>DOCKER-USER</code>.</p></div>
+  <p>Opsional: filter koneksi <em>keluar</em> juga (default deny outgoing). Ini efektif menghambat malware yang mencoba "menelepon pulang", tapi kamu harus mengizinkan DNS, NTP, HTTP/HTTPS untuk apt, dan lain-lain secara manual. Cocok untuk server dengan fungsi sempit.</p>
+  <div class="callout ok"><strong>Rollback</strong><p><code>sudo ufw disable</code> (dari konsol jika SSH sudah terputus).</p></div>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 5 -->
+<section id="s-service" data-title="Minimalkan service">
+  <h2><span class="num">05</span> Minimalkan service &amp; paket <span class="pri p1">P1</span></h2>
+  <p class="why">Setiap service yang berjalan adalah permukaan serangan. Kode yang tidak terpasang tidak bisa dieksploitasi.</p>
+<pre><code><span class="c"># Apa yang mendengarkan di jaringan?</span>
+sudo ss -tulpn
+<span class="c"># Service yang aktif saat boot</span>
+systemctl list-unit-files --type=service --state=enabled
+<span class="c"># Timer (cron versi systemd)</span>
+systemctl list-timers --all</code></pre>
+  <p>Kandidat umum untuk dimatikan di <strong>server</strong> (cek dulu apakah kamu membutuhkannya):</p>
+  <table>
+    <tr><th>Service</th><th>Fungsi</th><th>Matikan jika…</th></tr>
+    <tr><td><code>avahi-daemon</code></td><td>mDNS / Bonjour</td><td>bukan desktop di jaringan rumah</td></tr>
+    <tr><td><code>cups</code>, <code>cups-browsed</code></td><td>Printer</td><td>tidak mencetak (cups-browsed punya CVE serius tahun 2024)</td></tr>
+    <tr><td><code>bluetooth</code></td><td>Bluetooth</td><td>server / tidak dipakai</td></tr>
+    <tr><td><code>ModemManager</code></td><td>Modem seluler</td><td>tidak ada modem</td></tr>
+    <tr><td><code>rpcbind</code>, <code>nfs-*</code></td><td>NFS</td><td>tidak berbagi file via NFS</td></tr>
+    <tr><td><code>smbd</code>, <code>nmbd</code></td><td>Samba</td><td>tidak berbagi file ke Windows</td></tr>
+  </table>
+<pre><code>sudo systemctl disable --now avahi-daemon.service avahi-daemon.socket cups-browsed.service
+sudo systemctl mask ctrl-alt-del.target        <span class="c"># cegah reboot tak sengaja via Ctrl+Alt+Del</span>
+<span class="c"># Hapus paket klien jaringan lama yang tidak terenkripsi</span>
+sudo apt purge -y telnet rsh-client talk ftp 2&gt;/dev/null
+sudo apt autoremove --purge -y</code></pre>
+  <p>Pastikan service yang hanya dipakai lokal (database, Redis, dll.) mendengarkan di <code>127.0.0.1</code>, bukan di <code>0.0.0.0</code>. Cek kolom <em>Local Address</em> di output <code>ss -tulpn</code>.</p>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 6 -->
+<section id="s-f2b" data-title="Fail2ban">
+  <h2><span class="num">06</span> Fail2ban: blokir brute-force <span class="pri p2">P2</span></h2>
+  <p class="why">Fail2ban membaca log dan memblokir IP yang berkali-kali gagal login. Kalau SSH sudah key-only, manfaatnya terutama mengurangi noise. Untuk service yang masih memakai password (web login, mail), manfaatnya jauh lebih besar.</p>
+<pre><code>sudo apt install -y fail2ban</code></pre>
+<pre><code><span class="file">/etc/fail2ban/jail.local</span>[DEFAULT]
+bantime  = 1h
+findtime = 10m
+maxretry = 5
+bantime.increment = true
+bantime.maxtime   = 1w
+backend  = systemd
+banaction = ufw
+ignoreip = 127.0.0.1/8 ::1
+
+[sshd]
+enabled = true
+mode    = aggressive</code></pre>
+  <p>Tambahkan IP kamu sendiri ke <code>ignoreip</code> supaya tidak ikut terblokir.</p>
+<pre><code>sudo systemctl enable --now fail2ban
+sudo systemctl restart fail2ban
+sudo fail2ban-client status
+sudo fail2ban-client status sshd
+<span class="c"># Membuka blokir IP:</span>
+sudo fail2ban-client set sshd unbanip 203.0.113.10</code></pre>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 7 -->
+<section id="s-sysctl" data-title="Kernel (sysctl)">
+  <h2><span class="num">07</span> Hardening kernel dengan sysctl <span class="pri p2">P2</span></h2>
+  <p class="why">Parameter kernel mengatur perilaku jaringan (redirect, spoofing, SYN flood) dan seberapa banyak informasi internal kernel yang bisa dilihat proses biasa. Informasi itu sering dipakai untuk eksploitasi.</p>
+<pre><code><span class="file">/etc/sysctl.d/99-hardening.conf</span><span class="c"># --- Jaringan ---</span>
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+net.ipv4.conf.all.secure_redirects = 0
+net.ipv4.conf.default.secure_redirects = 0
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv6.conf.all.accept_source_route = 0
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.conf.default.log_martians = 1
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_rfc1337 = 1
+net.ipv6.conf.all.accept_ra = 0
+net.ipv6.conf.default.accept_ra = 0
+
+<span class="c"># --- Kernel ---</span>
+kernel.kptr_restrict = 2
+kernel.dmesg_restrict = 1
+kernel.unprivileged_bpf_disabled = 1
+net.core.bpf_jit_harden = 2
+kernel.yama.ptrace_scope = 1
+kernel.randomize_va_space = 2
+kernel.sysrq = 0
+fs.suid_dumpable = 0
+fs.protected_hardlinks = 1
+fs.protected_symlinks = 1
+fs.protected_fifos = 2
+fs.protected_regular = 2</code></pre>
+<pre><code>sudo sysctl --system
+sysctl kernel.kptr_restrict net.ipv4.tcp_syncookies   <span class="c"># verifikasi</span></code></pre>
+  <div class="callout warn"><strong>Parameter yang bisa merusak sesuatu</strong>
+    <p>• <code>accept_ra = 0</code>: <strong>jangan dipakai</strong> jika server mendapat IPv6 lewat SLAAC/router advertisement (umum di VPS). Hapus kedua baris itu kalau IPv6 hilang.</p>
+    <p>• <code>rp_filter = 1</code>: bisa memutus routing asimetris (multi-homed, VPN tertentu). Gunakan <code>2</code> (loose) kalau bermasalah.</p>
+    <p>• Docker, Kubernetes, VPN gateway, dan router membutuhkan <code>net.ipv4.ip_forward = 1</code>. Jangan paksa ke 0 di mesin seperti itu.</p>
+    <p>• <code>ptrace_scope = 2</code> atau lebih memblokir debugger (gdb, strace). Nilai 1 adalah default Ubuntu yang seimbang.</p>
+  </div>
+  <h3>Matikan core dump</h3>
+  <p>Core dump bisa berisi password atau kunci dari memori.</p>
+<pre><code>echo '* hard core 0' | sudo tee /etc/security/limits.d/99-nocore.conf
+sudo mkdir -p /etc/systemd/coredump.conf.d
+printf '[Coredump]\nStorage=none\nProcessSizeMax=0\n' | sudo tee /etc/systemd/coredump.conf.d/disable.conf</code></pre>
+  <div class="callout ok"><strong>Rollback</strong><p><code>sudo rm /etc/sysctl.d/99-hardening.conf &amp;&amp; sudo reboot</code></p></div>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 8 -->
+<section id="s-fs" data-title="Filesystem &amp; izin file">
+  <h2><span class="num">08</span> Filesystem, mount options &amp; izin file <span class="pri p2">P2</span></h2>
+  <p class="why">Banyak exploit mengunduh payload ke direktori yang bisa ditulis siapa saja (<code>/tmp</code>, <code>/dev/shm</code>) lalu menjalankannya. Opsi mount <code>noexec,nosuid,nodev</code> memutus rantai itu.</p>
+  <h3>Amankan /dev/shm dan /tmp</h3>
+<pre><code><span class="file">/etc/fstab (tambahkan di akhir)</span>tmpfs  /dev/shm  tmpfs  defaults,nodev,nosuid,noexec  0 0
+tmpfs  /tmp      tmpfs  defaults,nodev,nosuid,noexec,mode=1777,size=2G  0 0</code></pre>
+<pre><code>sudo systemctl daemon-reload
+sudo mount -o remount /dev/shm
+sudo mount /tmp          <span class="c"># atau reboot; isi /tmp lama akan tertutup mount baru</span>
+findmnt /tmp /dev/shm    <span class="c"># pastikan opsi noexec,nosuid,nodev terlihat</span></code></pre>
+  <div class="callout warn"><strong>Efek samping <code>noexec</code> di /tmp</strong><p>Beberapa installer pihak ketiga dan script build mengeksekusi file dari /tmp dan akan gagal. Kalau terjadi, jalankan sementara <code>sudo mount -o remount,exec /tmp</code>, lalu kembalikan. Sesuaikan <code>size=</code> dengan RAM kamu, karena /tmp berbasis tmpfs memakai RAM.</p></div>
+  <h3>Izin file sensitif</h3>
+<pre><code>sudo chown root:root /etc/passwd /etc/group; sudo chmod 644 /etc/passwd /etc/group
+sudo chown root:shadow /etc/shadow /etc/gshadow; sudo chmod 640 /etc/shadow /etc/gshadow
+sudo chmod 600 /etc/ssh/ssh_host_*_key
+sudo chmod 700 /root
+sudo chmod 750 /home/*          <span class="c"># default di Ubuntu 21.04+, cek instalasi lama
+</span>sudo chmod og-rwx /etc/crontab /etc/cron.d /etc/cron.daily /etc/cron.hourly /etc/cron.weekly /etc/cron.monthly</code></pre>
+  <h3>Cari file berbahaya</h3>
+<pre><code><span class="c"># Program SUID/SGID: bandingkan dengan daftar yang wajar, curigai yang ada di /home, /tmp, /opt</span>
+sudo find / -xdev \( -perm -4000 -o -perm -2000 \) -type f -printf '%M %u %p\n' 2&gt;/dev/null
+
+<span class="c"># File yang bisa ditulis semua orang</span>
+sudo find / -xdev -type f -perm -0002 -not -path '/proc/*' 2&gt;/dev/null
+
+<span class="c"># Direktori world-writable tanpa sticky bit</span>
+sudo find / -xdev -type d -perm -0002 ! -perm -1000 2&gt;/dev/null
+
+<span class="c"># File tanpa pemilik (sisa user yang dihapus)</span>
+sudo find / -xdev \( -nouser -o -nogroup \) 2&gt;/dev/null</code></pre>
+  <h3>Enkripsi disk</h3>
+  <p>Untuk laptop dan perangkat yang bisa dicuri, <strong>enkripsi disk penuh (LUKS)</strong> adalah kontrol terpenting. Pilihannya ada di installer Ubuntu ("Advanced features → Use LVM and encryption"). Mengenkripsi disk sistem setelah instalasi sangat sulit dan praktis butuh instal ulang. Cek apakah sudah aktif:</p>
+<pre><code>lsblk -o NAME,TYPE,FSTYPE,MOUNTPOINT | grep -i crypt</code></pre>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 9 -->
+<section id="s-apparmor" data-title="AppArmor">
+  <h2><span class="num">09</span> AppArmor (Mandatory Access Control) <span class="pri p2">P2</span></h2>
+  <p class="why">AppArmor membatasi apa yang boleh diakses sebuah program, <em>bahkan jika program itu berhasil dibobol</em>. Ubuntu sudah menyalakannya secara default. Tugasmu adalah memastikan profil penting berada di mode <em>enforce</em>.</p>
+<pre><code>sudo aa-status                          <span class="c"># ringkasan profil enforce/complain</span>
+sudo apt install -y apparmor-utils apparmor-profiles apparmor-profiles-extra</code></pre>
+  <p>Untuk profil baru atau tambahan, gunakan alur <strong>complain → uji → enforce</strong>:</p>
+<pre><code>sudo aa-complain /etc/apparmor.d/usr.sbin.nginx   <span class="c"># catat pelanggaran saja</span>
+<span class="c"># ... jalankan aplikasi seperti biasa beberapa hari ...</span>
+sudo journalctl -k | grep -i apparmor | grep -i denied
+sudo aa-logprof                                  <span class="c"># perbarui profil secara interaktif</span>
+sudo aa-enforce /etc/apparmor.d/usr.sbin.nginx   <span class="c"># aktifkan pemblokiran</span></code></pre>
+  <div class="callout warn"><strong>Jangan enforce semua profil sekaligus</strong><p>Profil di <code>apparmor-profiles-extra</code> tidak dirancang untuk setiap konfigurasi. Kalau di-enforce massal, service bisa berhenti tanpa pesan error yang jelas.</p></div>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 10 -->
+<section id="s-audit" data-title="Logging &amp; auditd">
+  <h2><span class="num">10</span> Logging &amp; audit dengan auditd <span class="pri p2">P2</span></h2>
+  <p class="why">Kalau terjadi insiden, pertanyaan pertama adalah "apa yang terjadi dan kapan". Tanpa log yang tersimpan dan audit trail, pertanyaan itu tidak bisa dijawab.</p>
+  <h3>Journald persisten</h3>
+<pre><code>sudo mkdir -p /etc/systemd/journald.conf.d
+printf '[Journal]\nStorage=persistent\nSystemMaxUse=1G\nCompress=yes\n' | sudo tee /etc/systemd/journald.conf.d/99-persist.conf
+sudo systemctl restart systemd-journald
+journalctl --disk-usage</code></pre>
+  <h3>Pasang auditd</h3>
+<pre><code>sudo apt install -y auditd audispd-plugins
+sudo systemctl enable --now auditd</code></pre>
+<pre><code><span class="file">/etc/audit/rules.d/99-hardening.rules</span><span class="c"># Perubahan identitas &amp; hak akses</span>
+-w /etc/passwd -p wa -k identity
+-w /etc/group -p wa -k identity
+-w /etc/shadow -p wa -k identity
+-w /etc/gshadow -p wa -k identity
+-w /etc/sudoers -p wa -k sudoers
+-w /etc/sudoers.d/ -p wa -k sudoers
+
+<span class="c"># Konfigurasi penting</span>
+-w /etc/ssh/sshd_config -p wa -k sshd
+-w /etc/ssh/sshd_config.d/ -p wa -k sshd
+-w /etc/crontab -p wa -k cron
+-w /etc/cron.d/ -p wa -k cron
+-w /var/spool/cron/ -p wa -k cron
+-w /etc/systemd/system/ -p wa -k systemd
+
+<span class="c"># Login</span>
+-w /var/log/lastlog -p wa -k logins
+-w /var/run/faillock/ -p wa -k logins
+
+<span class="c"># Perintah yang dijalankan sebagai root oleh user manusia</span>
+-a always,exit -F arch=b64 -S execve -F euid=0 -F auid&gt;=1000 -F auid!=unset -k root_cmd
+
+<span class="c"># Load/unload modul kernel</span>
+-a always,exit -F arch=b64 -S init_module,finit_module,delete_module -k modules
+
+<span class="c"># Perubahan waktu sistem</span>
+-a always,exit -F arch=b64 -S adjtimex,settimeofday,clock_settime -k time_change
+
+<span class="c"># Kunci aturan (butuh reboot untuk mengubah). Aktifkan HANYA setelah aturan stabil.</span>
+<span class="c"># -e 2</span></code></pre>
+<pre><code>sudo augenrules --load
+sudo auditctl -l | head                 <span class="c"># aturan aktif</span>
+sudo ausearch -k identity --start today <span class="c"># cari berdasarkan key</span>
+sudo aureport --summary
+sudo aureport --auth --failed</code></pre>
+  <div class="callout info"><strong>Kirim log ke luar mesin</strong><p>Penyerang yang mendapat root bisa menghapus log lokal. Untuk server penting, teruskan log ke server lain (rsyslog remote, Loki, Wazuh, atau layanan SIEM).</p></div>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 11 -->
+<section id="s-integrity" data-title="Integritas &amp; deteksi">
+  <h2><span class="num">11</span> Integritas file &amp; deteksi rootkit <span class="pri p3">P3</span></h2>
+  <p class="why">Kalau pencegahan gagal, deteksi adalah lapisan berikutnya. AIDE memberi tahu file sistem mana yang berubah sejak baseline dibuat.</p>
+  <h3>AIDE</h3>
+<pre><code>sudo apt install -y aide
+sudo aideinit                                     <span class="c"># membuat baseline (bisa beberapa menit)</span>
+sudo cp /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+sudo aide --config /etc/aide/aide.conf --check    <span class="c"># bandingkan dengan baseline</span></code></pre>
+  <p>Setelah upgrade paket yang sah, perbarui baseline dengan <code>sudo aide --config /etc/aide/aide.conf --update</code>, lalu salin ulang <code>aide.db.new</code> ke <code>aide.db</code>. Ubuntu sudah menjadwalkan pemeriksaan harian lewat <code>dailyaidecheck</code>.</p>
+  <div class="callout info"><strong>Simpan baseline di luar mesin</strong><p>Penyerang dengan akses root bisa memperbarui database AIDE. Salin <code>aide.db</code> ke media read-only atau ke mesin lain.</p></div>
+  <h3>Verifikasi paket</h3>
+<pre><code>sudo apt install -y debsums
+sudo debsums -s          <span class="c"># tampilkan hanya file paket yang checksum-nya berubah</span></code></pre>
+  <h3>rkhunter</h3>
+<pre><code>sudo apt install -y rkhunter
+sudo rkhunter --propupd          <span class="c"># simpan properti file saat sistem masih bersih</span>
+sudo rkhunter --check --sk --rwo <span class="c"># tampilkan hanya warning</span></code></pre>
+  <p>rkhunter cukup sering memberi <em>false positive</em> (misalnya script di <code>/usr/bin</code>). Teliti setiap warning, dan whitelist lewat <code>/etc/rkhunter.conf.local</code> hanya setelah kamu yakin aman.</p>
+  <h3>Antivirus (opsional)</h3>
+  <p>ClamAV berguna untuk server file, mail, atau upload yang melayani klien Windows. Untuk server Linux biasa, manfaatnya kecil dibanding kontrol lain di halaman ini.</p>
+<pre><code>sudo apt install -y clamav clamav-daemon
+sudo systemctl stop clamav-freshclam &amp;&amp; sudo freshclam &amp;&amp; sudo systemctl start clamav-freshclam
+clamscan -r -i /home</code></pre>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 12 -->
+<section id="s-modules" data-title="Modul kernel &amp; USB">
+  <h2><span class="num">12</span> Nonaktifkan modul kernel yang tidak dipakai <span class="pri p3">P3</span></h2>
+  <p class="why">Filesystem dan protokol jaringan yang jarang dipakai adalah kode kernel yang jarang diaudit. Beberapa punya riwayat CVE eskalasi hak akses (misalnya DCCP dan TIPC).</p>
+<pre><code><span class="file">/etc/modprobe.d/99-hardening.conf</span><span class="c"># Filesystem langka</span>
+install cramfs /bin/false
+install freevxfs /bin/false
+install hfs /bin/false
+install hfsplus /bin/false
+install jffs2 /bin/false
+
+<span class="c"># Protokol jaringan langka</span>
+install dccp /bin/false
+install sctp /bin/false
+install rds /bin/false
+install tipc /bin/false
+
+<span class="c"># Firewire (serangan DMA)</span>
+install firewire-core /bin/false
+install thunderbolt /bin/false   <span class="c"># HAPUS baris ini jika memakai dock/monitor Thunderbolt</span>
+
+<span class="c"># Hanya untuk SERVER: blokir USB storage</span>
+<span class="c"># install usb-storage /bin/false</span></code></pre>
+<pre><code>sudo update-initramfs -u
+modprobe -n -v dccp      <span class="c"># harus menampilkan "install /bin/false"</span></code></pre>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 13 -->
+<section id="s-pam" data-title="Kunci akun (faillock)">
+  <h2><span class="num">13</span> Kunci akun setelah gagal login (faillock) <span class="pri p3">P3</span></h2>
+  <p class="why">Ini melindungi login lokal dan konsol dari tebak-tebakan password. <strong>Bagian ini paling berisiko di seluruh tutorial:</strong> kesalahan PAM bisa membuat <em>tidak ada seorang pun</em> yang bisa login, termasuk lewat sudo.</p>
+  <div class="callout danger"><strong>Wajib</strong><p>Buka <code>sudo -i</code> di satu terminal dan biarkan terbuka sampai pengujian selesai. Backup file terlebih dahulu: <code>sudo cp /etc/pam.d/common-auth /etc/pam.d/common-auth.bak</code></p></div>
+<pre><code><span class="file">/etc/security/faillock.conf</span>deny = 5
+unlock_time = 900
+fail_interval = 900
+audit</code></pre>
+  <p>Di <code>/etc/pam.d/common-auth</code>, ubah bagian atas agar urutannya persis seperti ini (baris lain di bawahnya biarkan):</p>
+<pre><code><span class="file">/etc/pam.d/common-auth</span>auth    requisite                       pam_faillock.so preauth
+auth    [success=1 default=ignore]      pam_unix.so nullok
+auth    [default=die]                   pam_faillock.so authfail
+auth    sufficient                      pam_faillock.so authsucc
+auth    requisite                       pam_deny.so
+auth    required                        pam_permit.so</code></pre>
+<pre><code><span class="file">/etc/pam.d/common-account (tambahkan di akhir)</span>account required                        pam_faillock.so</code></pre>
+<pre><code><span class="c"># Uji di terminal LAIN:</span>
+sudo -k; sudo true            <span class="c"># harus tetap bisa dengan password benar</span>
+sudo faillock --user adminku  <span class="c"># lihat catatan kegagalan</span>
+sudo faillock --user adminku --reset</code></pre>
+  <div class="callout warn"><strong>Catatan pemeliharaan</strong><p>Menjalankan <code>pam-auth-update</code> (kadang otomatis saat paket PAM di-upgrade) bisa menimpa <code>common-auth</code>. Setelah upgrade besar, cek ulang isinya. Kalau kamu perlu kepatuhan formal, gunakan Ubuntu Security Guide (bagian 15), yang mengelola ini dengan benar.</p></div>
+  <div class="callout ok"><strong>Rollback</strong><p><code>sudo cp /etc/pam.d/common-auth.bak /etc/pam.d/common-auth</code></p></div>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 14 -->
+<section id="s-desktop" data-title="Desktop &amp; boot">
+  <h2><span class="num">14</span> Khusus desktop/laptop &amp; keamanan boot <span class="pri p3">P3</span></h2>
+  <p class="why">Ancaman utama perangkat pribadi berbeda dari server: pencurian fisik, layar yang tidak dikunci, dan aplikasi yang tidak tepercaya.</p>
+  <h3>Kunci layar &amp; login</h3>
+<pre><code>gsettings set org.gnome.desktop.session idle-delay 300          <span class="c"># layar mati setelah 5 menit</span>
+gsettings set org.gnome.desktop.screensaver lock-enabled true
+gsettings set org.gnome.desktop.screensaver lock-delay 0
+gsettings set org.gnome.desktop.notifications show-in-lock-screen false</code></pre>
+  <p>Matikan auto-login: di <code>/etc/gdm3/custom.conf</code> pastikan <code>AutomaticLoginEnable=false</code>.</p>
+  <h3>Firewall &amp; aplikasi</h3>
+  <ul>
+    <li>Aktifkan UFW (bagian 04). Di desktop cukup <code>sudo ufw default deny incoming &amp;&amp; sudo ufw enable</code>. GUI-nya tersedia di <code>gufw</code>.</li>
+    <li>Pasang aplikasi dari repo resmi, Snap Store, atau Flathub. Hindari <code>.deb</code> acak dan <code>curl … | sudo bash</code> dari sumber yang tidak kamu verifikasi.</li>
+    <li>Cek izin snap: <code>snap connections nama-app</code>. Cabut yang tidak perlu: <code>sudo snap disconnect nama-app:camera</code>.</li>
+  </ul>
+  <h3>Secure Boot</h3>
+<pre><code>mokutil --sb-state      <span class="c"># harus "SecureBoot enabled"</span></code></pre>
+  <h3>Password GRUB</h3>
+  <p>Password GRUB mencegah orang dengan akses fisik mengedit parameter boot, misalnya <code>init=/bin/bash</code> untuk mendapat root tanpa password. Tanpa enkripsi disk, manfaatnya terbatas, karena penyerang tetap bisa boot dari USB.</p>
+<pre><code>grub-mkpasswd-pbkdf2       <span class="c"># salin hash "grub.pbkdf2.sha512...."</span></code></pre>
+<pre><code><span class="file">/etc/grub.d/40_custom (tambahkan di akhir)</span>set superusers="grubadmin"
+password_pbkdf2 grubadmin grub.pbkdf2.sha512.10000.HASH_KAMU</code></pre>
+  <p>Secara default, setelah ini setiap boot meminta password. Supaya boot normal tetap otomatis dan hanya <em>edit/recovery</em> yang dilindungi, tambahkan <code>--unrestricted</code> pada entri menu:</p>
+<pre><code>sudo sed -i 's/^CLASS="--class gnu-linux --class gnu --class os"/CLASS="--class gnu-linux --class gnu --class os --unrestricted"/' /etc/grub.d/10_linux
+sudo update-grub</code></pre>
+  <p>Jangan lupa memasang juga password BIOS/UEFI dan mematikan boot dari USB di firmware.</p>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 15 -->
+<section id="s-audit-tools" data-title="Audit: Lynis &amp; USG">
+  <h2><span class="num">15</span> Ukur hasil: Lynis &amp; Ubuntu Security Guide <span class="pri p2">P2</span></h2>
+  <p class="why">Tanpa pengukuran, hardening hanya perasaan aman. Jalankan audit <em>sebelum</em> dan <em>sesudah</em>, lalu bandingkan.</p>
+  <h3>Lynis</h3>
+  <p>Versi di repo Ubuntu sering tertinggal. Pakai versi terbaru dari GitHub:</p>
+<pre><code>git clone --depth 1 https://github.com/CISOfy/lynis
+cd lynis &amp;&amp; sudo ./lynis audit system
+<span class="c"># Lihat "Hardening index" dan bagian "Suggestions"</span>
+sudo grep -E '^(warning|suggestion)' /var/log/lynis-report.dat | head -40</code></pre>
+  <p>Jangan mengejar skor 100. Baca setiap saran dan putuskan apakah relevan untuk ancaman yang kamu hadapi.</p>
+  <h3>Ubuntu Security Guide (USG): benchmark CIS/DISA-STIG</h3>
+  <p>Ini alat resmi Canonical untuk audit dan remediasi otomatis berdasarkan CIS Benchmark. Butuh Ubuntu Pro (gratis untuk personal).</p>
+<pre><code>sudo pro enable usg
+sudo apt install -y usg
+sudo usg audit cis_level1_server       <span class="c"># atau cis_level1_workstation</span>
+<span class="c"># Laporan HTML tersimpan di /var/lib/usg/</span></code></pre>
+  <div class="callout danger"><strong><code>usg fix</code> bukan tombol ajaib</strong><p><code>sudo usg fix cis_level1_server</code> mengubah puluhan pengaturan sekaligus, termasuk SSH, PAM, dan firewall. Jalankan hanya di VM uji dulu. Untuk mengecualikan aturan tertentu, gunakan tailoring file (<code>usg generate-tailoring</code>).</p></div>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 16 -->
+<section id="s-backup" data-title="Backup &amp; pemulihan">
+  <h2><span class="num">16</span> Backup &amp; rencana pemulihan <span class="pri p2">P2</span></h2>
+  <p class="why">Tidak ada hardening yang 100%. Ransomware dan kesalahan manusia tetap terjadi, dan backup yang teruji adalah satu-satunya jaminan kamu bisa pulih.</p>
+  <ul>
+    <li><strong>Aturan 3-2-1:</strong> 3 salinan, 2 media berbeda, 1 di luar lokasi (offsite).</li>
+    <li><strong>Immutable / append-only:</strong> penyerang yang mendapat root tidak boleh bisa menghapus backup. Gunakan kredensial yang hanya boleh menulis, atau object storage dengan object lock.</li>
+    <li><strong>Uji restore</strong> secara berkala. Backup yang belum pernah di-restore belum terbukti bisa dipakai.</li>
+  </ul>
+<pre><code><span class="c"># Contoh dengan restic (terenkripsi, deduplikasi)</span>
+sudo apt install -y restic
+restic -r sftp:backup@host-lain:/srv/restic init
+sudo restic -r sftp:backup@host-lain:/srv/restic backup /etc /home /var/www --exclude-caches
+restic -r sftp:backup@host-lain:/srv/restic snapshots
+restic -r sftp:backup@host-lain:/srv/restic restore latest --target /tmp/uji-restore</code></pre>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 17 -->
+<section id="s-verify" data-title="Verifikasi akhir">
+  <h2><span class="num">17</span> Verifikasi akhir &amp; pemeliharaan rutin</h2>
+  <p class="why">Jalankan blok ini setelah semua langkah, dan ulangi secara berkala. Setiap baris menampilkan hasil yang bisa kamu cocokkan dengan kolom "Harapan".</p>
+<pre><code>echo "== SSH ==";        sudo sshd -T | grep -Ei '^(permitrootlogin|passwordauthentication|kbdinteractiveauthentication)'
+echo "== UFW ==";        sudo ufw status | head -3
+echo "== Fail2ban ==";   sudo fail2ban-client status sshd 2&gt;/dev/null | grep -E 'Currently|Total'
+echo "== Update ==";     systemctl is-active unattended-upgrades
+echo "== AppArmor ==";   sudo aa-status | head -3
+echo "== auditd ==";     systemctl is-active auditd
+echo "== sysctl ==";     sysctl -n kernel.kptr_restrict kernel.dmesg_restrict net.ipv4.tcp_syncookies
+echo "== Mount ==";      findmnt -no OPTIONS /tmp /dev/shm
+echo "== Port ==";       sudo ss -tulpn | awk 'NR&gt;1{print $1, $5, $7}'
+echo "== Root ==";       sudo passwd -S root</code></pre>
+  <table>
+    <tr><th>Pemeriksaan</th><th>Harapan</th></tr>
+    <tr><td>SSH</td><td><code>permitrootlogin no</code>, <code>passwordauthentication no</code>, <code>kbdinteractiveauthentication no</code></td></tr>
+    <tr><td>UFW</td><td><code>Status: active</code>, default deny (incoming)</td></tr>
+    <tr><td>Update / auditd</td><td><code>active</code></td></tr>
+    <tr><td>sysctl</td><td><code>2</code>, <code>1</code>, <code>1</code></td></tr>
+    <tr><td>Mount</td><td>ada <code>nosuid,nodev,noexec</code></td></tr>
+    <tr><td>Port</td><td>hanya port yang memang kamu sengaja buka</td></tr>
+    <tr><td>Root</td><td>status <code>L</code> (locked)</td></tr>
+  </table>
+  <h3>Jadwal pemeliharaan</h3>
+  <table>
+    <tr><th>Frekuensi</th><th>Tugas</th></tr>
+    <tr><td>Harian (otomatis)</td><td>unattended-upgrades, AIDE check, rotasi log</td></tr>
+    <tr><td>Mingguan</td><td>Baca <code>sudo aureport --summary</code>, <code>fail2ban-client status</code>, <code>journalctl -p err -S -7d</code></td></tr>
+    <tr><td>Bulanan</td><td>Audit user &amp; sudoers, <code>ss -tulpn</code>, reboot untuk kernel baru, jalankan Lynis</td></tr>
+    <tr><td>Per kuartal</td><td>Uji restore backup, rotasi SSH key yang tidak dipakai, cek masa dukungan rilis (<code>ubuntu-security-status</code>)</td></tr>
+    <tr><td>Setiap 2 tahun</td><td>Upgrade ke LTS berikutnya (<code>sudo do-release-upgrade</code>) sebelum masa dukungan standar habis</td></tr>
+  </table>
+  <label class="done-box"><input type="checkbox"> Tandai bagian ini selesai</label>
+</section>
+
+<!-- 18 -->
+<section id="s-trouble" data-title="Troubleshooting">
+  <h2><span class="num">18</span> Troubleshooting: kalau terkunci atau ada yang rusak</h2>
+  <table>
+    <tr><th>Gejala</th><th>Kemungkinan penyebab</th><th>Perbaikan (dari konsol / sesi yang masih terbuka)</th></tr>
+    <tr><td><code>Permission denied (publickey)</code></td><td>Key belum terpasang atau izin <code>~/.ssh</code> salah</td><td><code>chmod 700 ~/.ssh; chmod 600 ~/.ssh/authorized_keys</code>; cek <code>journalctl -u ssh -n 50</code></td></tr>
+    <tr><td>SSH timeout / tidak merespons</td><td>UFW memblokir port SSH</td><td><code>sudo ufw allow OpenSSH</code> atau <code>sudo ufw disable</code></td></tr>
+    <tr><td>Password masih diterima padahal sudah dimatikan</td><td>File cloud-init menang (nama file)</td><td>Ganti nama ke <code>00-hardening.conf</code>, cek <code>sudo sshd -T</code></td></tr>
+    <tr><td>Port SSH baru tidak aktif (24.04)</td><td>Socket activation</td><td><code>sudo systemctl daemon-reload &amp;&amp; sudo systemctl restart ssh.socket</code></td></tr>
+    <tr><td>Tidak bisa sudo / login sama sekali</td><td>PAM rusak</td><td>Boot ke <em>recovery mode</em> → root shell → <code>mount -o remount,rw /</code> → pulihkan <code>common-auth.bak</code></td></tr>
+    <tr><td>IPv6 hilang setelah sysctl</td><td><code>accept_ra = 0</code></td><td>Hapus baris <code>accept_ra</code>, lalu <code>sudo sysctl --system</code></td></tr>
+    <tr><td>Installer/script gagal "Permission denied" di /tmp</td><td><code>noexec</code></td><td><code>sudo mount -o remount,exec /tmp</code> sementara</td></tr>
+    <tr><td>Service tiba-tiba gagal tanpa error jelas</td><td>AppArmor deny</td><td><code>sudo journalctl -k | grep DENIED</code> → <code>aa-complain</code> profilnya</td></tr>
+    <tr><td>Aturan audit tidak bisa diubah</td><td><code>-e 2</code> (immutable)</td><td>Edit file rules, lalu reboot</td></tr>
+  </table>
+</section>
+
+<footer>
+  <p><strong>Referensi:</strong> <a href="https://ubuntu.com/security/certifications/docs/usg">Ubuntu Security Guide</a> · <a href="https://www.cisecurity.org/benchmark/ubuntu_linux">CIS Ubuntu Linux Benchmark</a> · <a href="https://documentation.ubuntu.com/server/">Ubuntu Server Documentation</a> · <a href="https://man.openbsd.org/sshd_config">sshd_config(5)</a> · <a href="https://pages.nist.gov/800-63-3/sp800-63b.html">NIST SP 800-63B</a> · <a href="https://cisofy.com/lynis/">Lynis</a></p>
+  <p>Progres ceklis disimpan hanya di browser kamu (localStorage). Selalu uji di lingkungan non-produksi terlebih dahulu.</p>
+</footer>
+</main>
+</div>
+<button class="menu-toggle" id="menuBtn" aria-controls="sidebar" aria-expanded="false">☰ Daftar isi</button>
+
+<script>
+(function(){
+  var KEY = 'hardening-ubuntu-progress-v1';
+  function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ return {}; } }
+  function save(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); } catch(e){} }
+  var state = load();
+
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+  var tocList = document.querySelector('#toc ol');
+  var links = {};
+  sections.forEach(function(sec, i){
+    var li = document.createElement('li');
+    var a = document.createElement('a');
+    a.href = '#' + sec.id;
+    a.innerHTML = '<span class="n">' + String(i).padStart(2,'0') + '</span><span></span>';
+    a.lastChild.innerHTML = sec.getAttribute('data-title');
+    li.appendChild(a); tocList.appendChild(li);
+    links[sec.id] = a;
+    a.addEventListener('click', function(){ closeMenu(); });
+  });
+
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.done-box input'));
+  function refresh(){
+    var done = 0;
+    boxes.forEach(function(b){
+      var id = b.closest('section').id;
+      b.parentNode.classList.toggle('checked', b.checked);
+      links[id].classList.toggle('done', b.checked);
+      if (b.checked) done++;
+    });
+    document.getElementById('bar').style.width = (boxes.length ? done / boxes.length * 100 : 0) + '%';
+    document.getElementById('plabel').textContent = done + ' dari ' + boxes.length + ' langkah selesai';
+  }
+  boxes.forEach(function(b){
+    var id = b.closest('section').id;
+    b.checked = !!state[id];
+    b.addEventListener('change', function(){ state[id] = b.checked; save(state); refresh(); });
+  });
+  refresh();
+
+  document.getElementById('reset').addEventListener('click', function(){
+    if (!confirm('Hapus semua tanda selesai?')) return;
+    state = {}; save(state); boxes.forEach(function(b){ b.checked = false; }); refresh();
+  });
+
+  // Tombol salin pada setiap blok kode
+  document.querySelectorAll('pre').forEach(function(pre){
+    var btn = document.createElement('button');
+    btn.className = 'copy'; btn.type = 'button'; btn.textContent = 'Salin';
+    btn.addEventListener('click', function(){
+      var code = pre.querySelector('code').cloneNode(true);
+      var f = code.querySelector('.file'); if (f) f.remove();
+      var text = code.textContent.replace(/\s+$/,'');
+      var done = function(){ btn.textContent = 'Tersalin ✓'; setTimeout(function(){ btn.textContent = 'Salin'; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function(){ fallback(text); done(); });
+      } else { fallback(text); done(); }
+    });
+    pre.appendChild(btn);
+  });
+  function fallback(t){
+    var ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove();
+  }
+
+  // Sorot bagian aktif di daftar isi
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) {
+          Object.keys(links).forEach(function(k){ links[k].classList.remove('active'); });
+          links[e.target.id].classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -80% 0px' });
+    sections.forEach(function(s){ io.observe(s); });
+  }
+
+  // Tema
+  var root = document.documentElement;
+  try { var t = localStorage.getItem('hardening-theme'); if (t) root.setAttribute('data-theme', t); } catch(e){}
+  document.getElementById('theme').addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme') ||
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('hardening-theme', next); } catch(e){}
+  });
+
+  // Menu mobile
+  var aside = document.getElementById('sidebar'), menuBtn = document.getElementById('menuBtn');
+  function closeMenu(){ aside.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); }
+  menuBtn.addEventListener('click', function(){
+    var open = aside.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', String(open));
+  });
+})();
+</script>
+</body>
+</html>
