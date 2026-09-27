@@ -1,4 +1,4 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body style="margin:0">
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta property="og:title" content="Undangan Jalan-Jalan untuk Septi"><meta property="og:description" content="Pilih jam jemput dan kegiatan kita tanggal 3 Oktober ♥"></head><body style="margin:0">
 <title>Undangan Jalan-Jalan Septi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +21,7 @@
   }
   html, body { height: 100%; }
   body {
+    --dw: 170px; --dh: 200px;
     background-color: var(--sky);
     background-image:
       linear-gradient(var(--grid) 1px, transparent 1px),
@@ -29,11 +30,12 @@
     color: var(--ink);
     font-family: "Pixelify Sans", ui-rounded, "Trebuchet MS", system-ui, sans-serif;
     font-size: 18px;
-    overflow-x: hidden;
+    overflow: hidden;
   }
   .app {
     position: relative;
-    min-height: 100%;
+    height: 100%;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
   }
@@ -43,22 +45,32 @@
   .sparkle { position: absolute; image-rendering: pixelated; animation: twinkle 2.4s ease-in-out infinite; }
   @keyframes twinkle { 0%, 100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.1); } }
 
-  .ground {
-    position: fixed; left: 0; right: 0; bottom: 0; height: 34px;
-    background:
-      linear-gradient(var(--grass) 0 10px, #45a84a 10px 14px, var(--dirt) 14px);
-    border-top: 4px solid var(--ink);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
   main {
     position: relative;
     z-index: 2;
-    flex: 1;
-    display: grid;
-    place-items: center;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
     padding-inline: 16px;
-    padding-block: 28px 290px;
+    padding-block: 20px 14px;
+  }
+  main > .panel { margin-block: auto; margin-inline: auto; }
+
+  .stage {
+    position: relative;
+    z-index: 3;
+    flex: none;
+    height: calc(var(--dh) + 40px);
+    transition: height .5s cubic-bezier(.4, 0, .2, 1);
+  }
+  .stage.center { height: calc(var(--dh) + 160px); }
+  .ground {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: calc(34px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(var(--grass) 0 10px, #45a84a 10px 14px, var(--dirt) 14px);
+    border-top: 4px solid var(--ink);
   }
   .panel { width: 100%; max-width: 620px; display: grid; gap: 18px; justify-items: center; text-align: center; }
   .eyebrow {
@@ -139,17 +151,19 @@
   .place { color: var(--leaf-dark); font-weight: 600; }
 
   .row-actions { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+  .row-actions.pair { flex-wrap: nowrap; width: 100%; max-width: 520px; gap: 12px; }
+  .row-actions.pair .btn { flex: 1 1 0; font-size: 20px; padding: 12px 10px; }
   .note { font-size: 15px; margin: 0; max-width: 46ch; }
 
   /* ---- Dino & balon ---- */
   .dino-zone {
-    position: fixed; z-index: 3;
-    left: 12px; bottom: 30px;
-    transition: left 1.6s steps(16), transform 1.6s steps(16);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    position: absolute;
+    left: 12px; bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(0);
+    transition: transform 2.2s cubic-bezier(.45, .05, .25, 1);
+    will-change: transform;
   }
-  .dino-zone.center { left: 50%; transform: translateX(-50%); }
-  #dino { display: block; image-rendering: pixelated; width: 170px; height: 200px; }
+  #dino { display: block; image-rendering: pixelated; width: var(--dw); height: var(--dh); }
   .qmark {
     position: absolute; left: 0; top: -14px;
     font-family: "Press Start 2P", monospace; font-size: 26px; color: var(--paper);
@@ -159,8 +173,8 @@
   @keyframes hop { 50% { transform: translateY(-6px) rotate(8deg); } }
   .bubble {
     box-sizing: border-box;
-    position: absolute; left: 148px; bottom: 150px;
-    width: max-content; max-width: min(300px, calc(100vw - 180px));
+    position: absolute; left: calc(var(--dw) + 12px); bottom: calc(var(--dh) * .28);
+    width: max-content; max-width: min(320px, calc(100vw - var(--dw) - 48px));
     background: var(--paper);
     border: 4px solid var(--ink);
     box-shadow: 5px 5px 0 var(--ink);
@@ -168,6 +182,7 @@
     font-size: 19px; font-weight: 600; line-height: 1.25;
     animation: pop .25s steps(3);
   }
+  .bubble:empty { display: none; }
   .bubble::before {
     content: ""; position: absolute; left: -16px; bottom: 10px;
     width: 12px; height: 12px; background: var(--paper);
@@ -178,7 +193,7 @@
     content: ""; position: absolute; left: -24px; bottom: 2px; width: 8px; height: 8px;
     background: var(--ink);
   }
-  .dino-zone.center .bubble { left: 50%; transform: translateX(-50%); bottom: 206px; max-width: min(320px, calc(100vw - 32px)); }
+  .dino-zone.center .bubble { left: 50%; transform: translateX(-50%); bottom: calc(var(--dh) + 14px); max-width: min(340px, calc(100vw - 32px)); }
   .dino-zone.center .bubble::before, .dino-zone.center .bubble::after { display: none; }
   @keyframes pop { from { transform: scale(.6); } to { transform: scale(1); } }
   .dino-zone.center .bubble { animation: none; }
@@ -217,23 +232,35 @@
   .sheet .btn { font-size: 18px; padding: 10px 16px; min-height: 48px; }
   .link-btn { background: none; border: 0; font: inherit; font-size: 15px; text-decoration: underline; color: var(--ink); cursor: pointer; }
   @media (max-width: 520px) {
-    body { font-size: 17px; }
-    #dino { width: 136px; height: 160px; }
+    body { font-size: 17px; --dw: 119px; --dh: 140px; }
     .qmark { font-size: 20px; }
-    .side-card { width: 112px; padding: 8px 6px; bottom: 12px; }
+    .side-card { width: 112px; padding: 8px 6px; bottom: 8px; }
     .side-card.left { right: calc(100% + 6px); }
     .side-card.right { left: calc(100% + 6px); }
     .side-card .big { font-size: 28px; }
     .side-card .nm { font-size: 16px; }
     .side-card .lbl { font-size: 7px; }
-    .bubble { left: 120px; bottom: 118px; font-size: 17px; max-width: calc(100vw - 150px); }
-    .dino-zone.center .bubble { bottom: 166px; }
-    main { padding-block: 22px 240px; }
-    .opt { width: 100%; max-width: 320px; grid-template-columns: 56px 1fr; justify-items: start; text-align: left; align-items: center; column-gap: 12px; padding: 10px 14px; }
-    .opt canvas { width: 56px; height: 56px; grid-row: span 2; }
-    .choices { gap: 14px; }
-    table { font-size: 15px; }
-    td, th { padding: 8px 8px; }
+    .bubble { font-size: 16px; padding: 10px 12px; }
+    .panel { gap: 14px; }
+    h1 { font-size: clamp(30px, 9vw, 44px); }
+    .btn.big { font-size: 24px; padding: 12px 32px; }
+    .choices { gap: 12px; }
+    .choices.times { flex-wrap: nowrap; }
+    .time-btn { min-width: 0; flex: 1 1 0; max-width: 170px; padding: 10px 8px; }
+    .time-btn .t { font-size: 32px; }
+    .time-btn .s { font-size: 14px; }
+    .opt { width: 100%; max-width: 340px; grid-template-columns: 44px 1fr; justify-items: start; text-align: left; align-items: center; column-gap: 12px; padding: 8px 12px; min-height: 0; }
+    .opt canvas { width: 44px; height: 44px; grid-row: span 2; }
+    .opt .n { font-size: 19px; }
+    .opt .s { font-size: 13px; }
+    .schedule-head { padding: 8px 10px; }
+    .schedule-head b { font-size: 18px; }
+    .schedule-head span { font-size: 7px; }
+    table { font-size: 13.5px; line-height: 1.25; }
+    th { font-size: 7px; padding: 7px 6px; }
+    td { padding: 6px 6px; }
+    td.time { font-size: 12.5px; }
+    .row-actions.pair .btn { font-size: 15px; padding: 10px 6px; min-height: 50px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .cloud, .sparkle, .qmark { animation: none; }
@@ -243,15 +270,17 @@
 
 <div class="app">
   <div class="deco" id="deco" aria-hidden="true"></div>
-  <div class="ground" aria-hidden="true"></div>
 
-  <main>
+  <main id="content">
     <div class="panel" id="panel" aria-live="polite"></div>
   </main>
 
-  <div class="dino-zone" id="dinoZone">
-    <div class="bubble" id="bubble" role="status"></div>
-    <canvas id="dino" width="34" height="40" aria-label="Dino hijau kecil yang lucu"></canvas>
+  <div class="stage" id="stage">
+    <div class="ground" aria-hidden="true"></div>
+    <div class="dino-zone" id="dinoZone">
+      <div class="bubble" id="bubble" role="status"></div>
+      <canvas id="dino" width="34" height="40" aria-label="Dino hijau kecil yang lucu"></canvas>
+    </div>
   </div>
 </div>
 
@@ -367,7 +396,8 @@
     if (dino.blink > 0) dino.blink -= dt;
     const beat = Math.floor(dino.t / 0.32) % 2;
     let arm = "down", bounce = 0;
-    if (dino.anim === "wave") { arm = beat ? "waveA" : "waveB"; bounce = reduce ? 0 : (Math.floor(dino.t / 0.64) % 2); }
+    if (dino.anim === "walk") { const st = Math.floor(dino.t / 0.16) % 2; arm = st ? "waveA" : "down"; bounce = reduce ? 0 : st; }
+    else if (dino.anim === "wave") { arm = beat ? "waveA" : "waveB"; bounce = reduce ? 0 : (Math.floor(dino.t / 0.64) % 2); }
     else if (dino.anim === "cheer") { arm = beat ? "upA" : "upB"; bounce = reduce ? 0 : (beat ? 2 : 0); }
     else { bounce = reduce ? 0 : (Math.floor(dino.t / 0.55) % 2); arm = (Math.floor(dino.t / 2.2) % 3 === 2) ? (beat ? "waveA" : "down") : "down"; }
     drawDino(dctx, arm, dino.mood, bounce, dino.mood === "normal" && dino.blink > 0);
@@ -462,6 +492,19 @@
   // ===================== BALON DIALOG =====================
   const bubble = document.getElementById("bubble");
   const zone = document.getElementById("dinoZone");
+  const stage = document.getElementById("stage");
+  function uncenter() {
+    zone.classList.remove("center"); stage.classList.remove("center");
+    zone.style.transition = "none"; zone.style.transform = "translateX(0)";
+    void zone.offsetWidth; zone.style.transition = "";
+    zone.querySelectorAll(".side-card").forEach((n) => n.remove());
+  }
+  function centerOffset() { return Math.max(0, stage.clientWidth / 2 - zone.offsetWidth / 2 - 12); }
+  window.addEventListener("resize", () => {
+    if (!zone.classList.contains("center")) return;
+    zone.style.transition = "none"; zone.style.transform = `translateX(${centerOffset()}px)`;
+    void zone.offsetWidth; zone.style.transition = "";
+  });
   let typeTimer = null, qmark = null;
   function say(text, done) {
     clearInterval(typeTimer);
@@ -489,7 +532,7 @@
   function clear() { panel.innerHTML = ""; }
 
   function page0() {
-    clear(); zone.classList.remove("center");
+    clear(); uncenter();
     mood("normal", "wave");
     panel.append(el('<div class="eyebrow fade-in">SABTU · 3 OKTOBER 2026</div>'));
     panel.append(el('<h1 class="fade-in">Undangan Jalan-Jalan <span class="heart">♥</span></h1>'));
@@ -501,9 +544,9 @@
   }
 
   function page1() {
-    clear(); mood("confused");
+    clear(); uncenter(); mood("confused");
     panel.append(el('<div class="eyebrow fade-in">PILIHAN 1 DARI 2</div>'));
-    const wrap = el('<div class="choices fade-in"></div>');
+    const wrap = el('<div class="choices times fade-in"></div>');
     [["08.00", "Pagi-pagi ☀"], ["09.00", "Santai dulu ☁"]].forEach(([t, s]) => {
       const b = el(`<button class="btn time-btn" type="button"><span class="t">${t}</span><span class="s">${s}</span></button>`);
       b.addEventListener("click", () => {
@@ -523,7 +566,7 @@
   }
 
   function page2() {
-    clear(); zone.classList.remove("center"); mood("confused");
+    clear(); uncenter(); mood("confused");
     panel.append(el('<div class="eyebrow fade-in">PILIHAN 2 DARI 2</div>'));
     const wrap = el('<div class="choices fade-in"></div>');
     Object.entries(PLANS).forEach(([key, p]) => {
@@ -563,8 +606,8 @@
           <tbody>${rows}</tbody>
         </table></div>
       </section>`);
-    const actions = el('<div class="row-actions fade-in"></div>');
-    const yes = el('<button class="btn primary big" type="button">Setuju ♥</button>');
+    const actions = el('<div class="row-actions pair fade-in"></div>');
+    const yes = el('<button class="btn primary" type="button">Setuju ♥</button>');
     const other = el('<button class="btn pink" type="button">Mau liat yang lain dulu</button>');
     yes.addEventListener("click", finale);
     other.addEventListener("click", page2);
@@ -577,12 +620,19 @@
 
   function finale() {
     clear();
-    mood("happy", "cheer");
-    zone.classList.add("center");
+    clearInterval(typeTimer);
     bubble.textContent = "";
     zone.querySelectorAll(".side-card").forEach((n) => n.remove());
     const p = PLANS[state.plan];
-    setTimeout(() => {
+    mood("happy", "walk");
+    stage.classList.add("center");
+    zone.classList.add("center");
+    zone.style.transform = `translateX(${centerOffset()}px)`;
+    let arrived = false;
+    const arrive = () => {
+      if (arrived) return; arrived = true;
+      zone.removeEventListener("transitionend", onEnd);
+      mood("happy", "cheer");
       burstHearts();
       const left = el(`<div class="side-card left"><span class="lbl">DIJEMPUT</span><span class="big">${state.pickup}</span><span class="nm">WIB</span></div>`);
       const right = el(`<div class="side-card right"><span class="lbl">KEGIATAN</span><span class="nm">${p.name}</span></div>`);
@@ -594,10 +644,13 @@
         send.addEventListener("click", () => sendToJuli(send));
         panel.append(send);
         const redo = el('<button class="link-btn fade-in" type="button">Ubah pilihan</button>');
-        redo.addEventListener("click", () => { zone.querySelectorAll(".side-card").forEach((n) => n.remove()); page1(); });
+        redo.addEventListener("click", page1);
         panel.append(redo);
       });
-    }, reduce ? 0 : 1700);
+    };
+    const onEnd = (e) => { if (e.target === zone && e.propertyName === "transform") arrive(); };
+    zone.addEventListener("transitionend", onEnd);
+    setTimeout(arrive, reduce ? 0 : 2400);
   }
 
   function wrapText(ctx, text, maxW) {
